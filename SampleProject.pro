@@ -7,9 +7,11 @@ TARGET = SampleProject
 INCLUDEPATH += . 
 
 # Input
-HEADERS +=  include/MyGraphicsWindow.h \
+HEADERS +=  include/GraphicsWindow.h \
+            include/BuildingPanel.h \
             include/FloorPanel.h \
-            include/Controller.h \
+            include/MyController.h \
+            include/ControllerInterface.h \
             include/GraphicalController.h \
             include/Floor.h \
             include/Elevator.h \
@@ -19,9 +21,11 @@ HEADERS +=  include/MyGraphicsWindow.h \
             include/Person.h
 
 SOURCES +=  main.cpp \
-            src/MyGraphicsWindow.cpp \
+            src/GraphicsWindow.cpp \
+            src/BuildingPanel.cpp \
             src/FloorPanel.cpp \
-            src/Controller.cpp \
+            src/ControllerInterface.cpp \
+            src/MyController.cpp \
             src/GraphicalController.cpp \
             src/Floor.cpp \
             src/Elevator.cpp \

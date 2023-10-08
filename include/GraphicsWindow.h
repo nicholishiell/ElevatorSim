@@ -15,19 +15,19 @@
 
 #include <iostream>
 
-#include "include/Controller.h"
+#include "include/ControllerInterface.h"
 #include "include/GraphicalController.h"
 
-class MyGraphicsWindow  : public QMainWindow
+class GraphicsWindow  : public QMainWindow
 {
 
     Q_OBJECT
 
 public:
-    MyGraphicsWindow(QWidget *parent = nullptr);
-    virtual ~MyGraphicsWindow(); 
+    GraphicsWindow(QWidget *parent = nullptr);
+    virtual ~GraphicsWindow(); 
     
-    void AddController(Controller* controller);
+    void AddController(ControllerInterface* controller);
 
 public slots:
 
@@ -49,7 +49,7 @@ private:
     QPushButton* stepButton_;
 
     GraphicalController* graphicalController_;
-    Controller* controller_;
+    ControllerInterface* controller_;
 
     int timeStepMilliseconds = 30;
     float timeStepSeconds = 0.03;

@@ -1,6 +1,6 @@
-#include "include/MyGraphicsWindow.h"
+#include "include/GraphicsWindow.h"
 
-MyGraphicsWindow::MyGraphicsWindow(QWidget *parent)  : QMainWindow(parent)
+GraphicsWindow::GraphicsWindow(QWidget *parent)  : QMainWindow(parent)
 {
     this->resize(800,600);
 
@@ -37,17 +37,17 @@ MyGraphicsWindow::MyGraphicsWindow(QWidget *parent)  : QMainWindow(parent)
     aniTimer_ = new QTimer();   
     simTimer_ = new QTimer();   
    
-    QObject::connect(playButton_, &QPushButton::clicked, this, &MyGraphicsWindow::PlaySimulation);
-    QObject::connect(stopButton_, &QPushButton::clicked, this, &MyGraphicsWindow::StopSimulation);
-    QObject::connect(stepButton_, &QPushButton::clicked, this, &MyGraphicsWindow::UpdateSimulationOneStep);
-    QObject::connect(simTimer_, &QTimer::timeout, this, &MyGraphicsWindow::UpdateSimulationOneStep);
+    QObject::connect(playButton_, &QPushButton::clicked, this, &GraphicsWindow::PlaySimulation);
+    QObject::connect(stopButton_, &QPushButton::clicked, this, &GraphicsWindow::StopSimulation);
+    QObject::connect(stepButton_, &QPushButton::clicked, this, &GraphicsWindow::UpdateSimulationOneStep);
+    QObject::connect(simTimer_, &QTimer::timeout, this, &GraphicsWindow::UpdateSimulationOneStep);
     
     aniTimer_->start(timeStepMilliseconds);
     QObject::connect(aniTimer_, &QTimer::timeout, scene_, &QGraphicsScene::advance);
 }
 
 void 
-MyGraphicsWindow::AddController(Controller* controller)
+GraphicsWindow::AddController(ControllerInterface* controller)
 {
     graphicalController_ = new GraphicalController(controller);
     scene_->addItem(graphicalController_);
@@ -55,27 +55,27 @@ MyGraphicsWindow::AddController(Controller* controller)
     controller_ = controller;
 }
 
-MyGraphicsWindow::~MyGraphicsWindow()
+GraphicsWindow::~GraphicsWindow()
 {
 
 }
 
 void 
-MyGraphicsWindow::UpdateSimulationOneStep()
+GraphicsWindow::UpdateSimulationOneStep()
 {
-    controller_->Update(timeStepSeconds);
+    controller_->Step(timeStepSeconds);
     graphicalController_->update();
 }
 
 
 void 
-MyGraphicsWindow::PlaySimulation()
+GraphicsWindow::PlaySimulation()
 {
     simTimer_->start(timeStepMilliseconds);
 }
 
 void 
-MyGraphicsWindow::StopSimulation()
+GraphicsWindow::StopSimulation()
 {
     simTimer_->stop();
 }

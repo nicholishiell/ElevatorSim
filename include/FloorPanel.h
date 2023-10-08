@@ -43,8 +43,8 @@ public slots:
     void UpRequestServiced();
 
 signals:
-    void UpRequested(const int level);
-    void DownRequested(const int level);
+
+    void ServiceRequested(const ServiceRequest& request);
 
 private:
 

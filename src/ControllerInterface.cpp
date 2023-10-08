@@ -3,8 +3,10 @@
 
 ControllerInterface::ControllerInterface()
 {
-
-
+    buildingPanel_ = std::make_shared<BuildingPanel>();
+    
+    QObject::connect(buildingPanel_.get(),&BuildingPanel::FireAlarm,this,&ControllerInterface::HandleFireAlarm);
+    QObject::connect(buildingPanel_.get(),&BuildingPanel::PowerOutageAlarm,this,&ControllerInterface::HandlePowerOutageAlarm);
 }
 
 ControllerInterface::~ControllerInterface()
@@ -24,8 +26,7 @@ ControllerInterface::AddFloor(std::string label)
         newFloor->SetNumElevators(static_cast<int>(elevators_.size()));
         
         auto floorPanel = newFloor->GetPanel();
-        QObject::connect(floorPanel.get(), &FloorPanel::UpRequested, this, &ControllerInterface::HandleUpRequest);
-        QObject::connect(floorPanel.get(), &FloorPanel::DownRequested, this, &ControllerInterface::HandleDownRequest);
+        QObject::connect(floorPanel.get(), &FloorPanel::ServiceRequested, this, &ControllerInterface::HandleServiceRequest);
 
         floors_.emplace_back(newFloor);
 
@@ -58,10 +59,25 @@ ControllerInterface::AddElevator(std::string label, int level, DoorState state)
         std::cout << "Maximum # of Elevators reached" << std::endl;
 }
 
+// Public SLOTS
+
 void 
 ControllerInterface::HandleServiceRequest(const ServiceRequest request)
 {
+    std::cout << "HandleServiceRequest" << std::endl;
     pendingRequests_.emplace_back(request);
+}
+
+void 
+ControllerInterface::HandleFireAlarm(const int level)
+{
+    handleFireAlarm(level);
+}
+
+void 
+ControllerInterface::HandlePowerOutageAlarm()
+{
+    handlePowerOutageAlarm();
 }
 
 //
@@ -72,7 +88,6 @@ ControllerInterface::Step(const float timeStep)
 
     this->userStep(timeStep);
 }
-
 
 void 
 ControllerInterface::mandatoryStep(const float timeStep)

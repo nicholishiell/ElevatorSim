@@ -1,14 +1,14 @@
 #include <QApplication>
 
-#include "include/MyGraphicsWindow.h"
-#include "include/Controller.h"
+#include "include/GraphicsWindow.h"
+#include "include/MyController.h"
 #include "include/Utility.h"
 
 int main(int argc, char *argv[]) 
 {   
   QApplication app(argc, argv);  
   
-  Controller aController;
+  MyController aController;
 
   aController.AddFloor("F1");
   aController.AddFloor("F2");
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
   aController.AddElevator("EV2",0,DoorState::CLOSED);
 
-  MyGraphicsWindow aWindow;
+  GraphicsWindow aWindow;
   aWindow.AddController(&aController);
   aWindow.show();
 

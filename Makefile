@@ -53,31 +53,37 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = main.cpp \
-		src/MyGraphicsWindow.cpp \
+		src/GraphicsWindow.cpp \
+		src/BuildingPanel.cpp \
 		src/FloorPanel.cpp \
-		src/Controller.cpp \
+		src/ControllerInterface.cpp \
+		src/MyController.cpp \
 		src/GraphicalController.cpp \
 		src/Floor.cpp \
 		src/Elevator.cpp \
-		src/ElevatorPanel.cpp moc_MyGraphicsWindow.cpp \
+		src/ElevatorPanel.cpp moc_GraphicsWindow.cpp \
+		moc_BuildingPanel.cpp \
 		moc_FloorPanel.cpp \
-		moc_Controller.cpp \
+		moc_ControllerInterface.cpp \
 		moc_GraphicalController.cpp \
 		moc_Floor.cpp \
 		moc_Elevator.cpp \
 		moc_ElevatorPanel.cpp \
 		moc_FloorButton.cpp
 OBJECTS       = main.o \
-		MyGraphicsWindow.o \
+		GraphicsWindow.o \
+		BuildingPanel.o \
 		FloorPanel.o \
-		Controller.o \
+		ControllerInterface.o \
+		MyController.o \
 		GraphicalController.o \
 		Floor.o \
 		Elevator.o \
 		ElevatorPanel.o \
-		moc_MyGraphicsWindow.o \
+		moc_GraphicsWindow.o \
+		moc_BuildingPanel.o \
 		moc_FloorPanel.o \
-		moc_Controller.o \
+		moc_ControllerInterface.o \
 		moc_GraphicalController.o \
 		moc_Floor.o \
 		moc_Elevator.o \
@@ -295,18 +301,22 @@ DIST          = /home/nickshiell/anaconda3/mkspecs/features/spec_pre.prf \
 		/home/nickshiell/anaconda3/mkspecs/features/exceptions.prf \
 		/home/nickshiell/anaconda3/mkspecs/features/yacc.prf \
 		/home/nickshiell/anaconda3/mkspecs/features/lex.prf \
-		SampleProject.pro include/MyGraphicsWindow.h \
+		SampleProject.pro include/GraphicsWindow.h \
+		include/BuildingPanel.h \
 		include/FloorPanel.h \
-		include/Controller.h \
+		include/MyController.h \
+		include/ControllerInterface.h \
 		include/GraphicalController.h \
 		include/Floor.h \
 		include/Elevator.h \
 		include/Floor.h \
 		include/ElevatorPanel.h \
 		include/FloorButton.h main.cpp \
-		src/MyGraphicsWindow.cpp \
+		src/GraphicsWindow.cpp \
+		src/BuildingPanel.cpp \
 		src/FloorPanel.cpp \
-		src/Controller.cpp \
+		src/ControllerInterface.cpp \
+		src/MyController.cpp \
 		src/GraphicalController.cpp \
 		src/Floor.cpp \
 		src/Elevator.cpp \
@@ -764,8 +774,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /home/nickshiell/anaconda3/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents include/MyGraphicsWindow.h include/FloorPanel.h include/Controller.h include/GraphicalController.h include/Floor.h include/Elevator.h include/Floor.h include/ElevatorPanel.h include/FloorButton.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp src/MyGraphicsWindow.cpp src/FloorPanel.cpp src/Controller.cpp src/GraphicalController.cpp src/Floor.cpp src/Elevator.cpp src/ElevatorPanel.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents include/GraphicsWindow.h include/BuildingPanel.h include/FloorPanel.h include/MyController.h include/ControllerInterface.h include/GraphicalController.h include/Floor.h include/Elevator.h include/Floor.h include/ElevatorPanel.h include/FloorButton.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp src/GraphicsWindow.cpp src/BuildingPanel.cpp src/FloorPanel.cpp src/ControllerInterface.cpp src/MyController.cpp src/GraphicalController.cpp src/Floor.cpp src/Elevator.cpp src/ElevatorPanel.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -797,10 +807,10 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /home/nickshiell/anaconda3/mkspecs/features/data/dummy.cpp
 	g++ -pipe -O2 -Wall -Wextra -dM -E -o moc_predefs.h /home/nickshiell/anaconda3/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_MyGraphicsWindow.cpp moc_FloorPanel.cpp moc_Controller.cpp moc_GraphicalController.cpp moc_Floor.cpp moc_Elevator.cpp moc_Floor.cpp moc_ElevatorPanel.cpp moc_FloorButton.cpp
+compiler_moc_header_make_all: moc_GraphicsWindow.cpp moc_BuildingPanel.cpp moc_FloorPanel.cpp moc_ControllerInterface.cpp moc_GraphicalController.cpp moc_Floor.cpp moc_Elevator.cpp moc_Floor.cpp moc_ElevatorPanel.cpp moc_FloorButton.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_MyGraphicsWindow.cpp moc_FloorPanel.cpp moc_Controller.cpp moc_GraphicalController.cpp moc_Floor.cpp moc_Elevator.cpp moc_Floor.cpp moc_ElevatorPanel.cpp moc_FloorButton.cpp
-moc_MyGraphicsWindow.cpp: include/MyGraphicsWindow.h \
+	-$(DEL_FILE) moc_GraphicsWindow.cpp moc_BuildingPanel.cpp moc_FloorPanel.cpp moc_ControllerInterface.cpp moc_GraphicalController.cpp moc_Floor.cpp moc_Elevator.cpp moc_Floor.cpp moc_ElevatorPanel.cpp moc_FloorButton.cpp
+moc_GraphicsWindow.cpp: include/GraphicsWindow.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QMainWindow \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qmainwindow.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
@@ -939,7 +949,7 @@ moc_MyGraphicsWindow.cpp: include/MyGraphicsWindow.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QDockWidget \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qdockwidget.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QHBoxLayout \
-		include/Controller.h \
+		include/ControllerInterface.h \
 		include/Utility.h \
 		include/Floor.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
@@ -948,12 +958,127 @@ moc_MyGraphicsWindow.cpp: include/MyGraphicsWindow.h \
 		include/Elevator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
+		include/BuildingPanel.h \
 		include/GraphicalController.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPainter \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
 		moc_predefs.h \
 		/home/nickshiell/anaconda3/bin/moc
-	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/MyGraphicsWindow.h -o moc_MyGraphicsWindow.cpp
+	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/GraphicsWindow.h -o moc_GraphicsWindow.cpp
+
+moc_BuildingPanel.cpp: include/BuildingPanel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobject.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qnamespace.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qconfig.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlogging.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qflags.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmutex.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qnumeric.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstring.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qchar.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbytearray.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qrefcount.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qarraydata.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringview.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qiterator.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qpair.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvector.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qpoint.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringlist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qregexp.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmetatype.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmargins.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qrect.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsize.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpalette.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qcolor.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qrgb.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qrgba64.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qbrush.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qmatrix.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpolygon.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qregion.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qdatastream.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qiodevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qline.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtransform.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qimage.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpixmap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qshareddata.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qhash.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfont.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qcursor.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qevent.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvariant.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qdebug.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtextstream.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlocale.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qset.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qurl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qurlquery.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qfile.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qvector2d.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QPushButton \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qicon.h \
+		include/Utility.h \
+		moc_predefs.h \
+		/home/nickshiell/anaconda3/bin/moc
+	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/BuildingPanel.h -o moc_BuildingPanel.cpp
 
 moc_FloorPanel.cpp: include/FloorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
@@ -1069,7 +1194,7 @@ moc_FloorPanel.cpp: include/FloorPanel.h \
 		/home/nickshiell/anaconda3/bin/moc
 	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/FloorPanel.h -o moc_FloorPanel.cpp
 
-moc_Controller.cpp: include/Controller.h \
+moc_ControllerInterface.cpp: include/ControllerInterface.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
 		/home/nickshiell/anaconda3/include/qt/QtCore/qobject.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs.h \
@@ -1186,9 +1311,10 @@ moc_Controller.cpp: include/Controller.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/BuildingPanel.h \
 		moc_predefs.h \
 		/home/nickshiell/anaconda3/bin/moc
-	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/Controller.h -o moc_Controller.cpp
+	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/ControllerInterface.h -o moc_ControllerInterface.cpp
 
 moc_GraphicalController.cpp: include/GraphicalController.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
@@ -1290,7 +1416,7 @@ moc_GraphicalController.cpp: include/GraphicalController.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/qfont.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/qfontmetrics.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
-		include/Controller.h \
+		include/ControllerInterface.h \
 		include/Utility.h \
 		include/Floor.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
@@ -1316,6 +1442,7 @@ moc_GraphicalController.cpp: include/GraphicalController.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/BuildingPanel.h \
 		moc_predefs.h \
 		/home/nickshiell/anaconda3/bin/moc
 	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/GraphicalController.h -o moc_GraphicalController.cpp
@@ -2021,7 +2148,7 @@ main.o: main.cpp /home/nickshiell/anaconda3/include/qt/QtWidgets/QApplication \
 		/home/nickshiell/anaconda3/include/qt/QtGui/qtouchdevice.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/qguiapplication.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/qinputmethod.h \
-		include/MyGraphicsWindow.h \
+		include/GraphicsWindow.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QMainWindow \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qmainwindow.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtabwidget.h \
@@ -2058,7 +2185,7 @@ main.o: main.cpp /home/nickshiell/anaconda3/include/qt/QtWidgets/QApplication \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QDockWidget \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qdockwidget.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QHBoxLayout \
-		include/Controller.h \
+		include/ControllerInterface.h \
 		include/Utility.h \
 		include/Floor.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
@@ -2067,12 +2194,14 @@ main.o: main.cpp /home/nickshiell/anaconda3/include/qt/QtWidgets/QApplication \
 		include/Elevator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
+		include/BuildingPanel.h \
 		include/GraphicalController.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPainter \
-		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/MyController.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-MyGraphicsWindow.o: src/MyGraphicsWindow.cpp include/MyGraphicsWindow.h \
+GraphicsWindow.o: src/GraphicsWindow.cpp include/GraphicsWindow.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QMainWindow \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qmainwindow.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
@@ -2211,7 +2340,7 @@ MyGraphicsWindow.o: src/MyGraphicsWindow.cpp include/MyGraphicsWindow.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QDockWidget \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qdockwidget.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QHBoxLayout \
-		include/Controller.h \
+		include/ControllerInterface.h \
 		include/Utility.h \
 		include/Floor.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
@@ -2220,10 +2349,123 @@ MyGraphicsWindow.o: src/MyGraphicsWindow.cpp include/MyGraphicsWindow.h \
 		include/Elevator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
+		include/BuildingPanel.h \
 		include/GraphicalController.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPainter \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MyGraphicsWindow.o src/MyGraphicsWindow.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GraphicsWindow.o src/GraphicsWindow.cpp
+
+BuildingPanel.o: src/BuildingPanel.cpp include/BuildingPanel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobject.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qnamespace.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qconfig.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlogging.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qflags.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmutex.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qnumeric.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstring.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qchar.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbytearray.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qrefcount.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qarraydata.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringview.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qiterator.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qpair.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvector.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qpoint.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringlist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qregexp.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmetatype.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobject_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmargins.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qrect.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsize.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpalette.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qcolor.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qrgb.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qrgba64.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qbrush.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qmatrix.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpolygon.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qregion.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qdatastream.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qiodevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qline.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtransform.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qimage.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpixmap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qshareddata.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qhash.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfont.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qcursor.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qevent.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvariant.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qdebug.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtextstream.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlocale.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qset.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qurl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qurlquery.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qfile.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qvector2d.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QPushButton \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qicon.h \
+		include/Utility.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BuildingPanel.o src/BuildingPanel.cpp
 
 FloorPanel.o: src/FloorPanel.cpp /home/nickshiell/anaconda3/include/qt/QtWidgets/QGridLayout \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qgridlayout.h \
@@ -2347,7 +2589,7 @@ FloorPanel.o: src/FloorPanel.cpp /home/nickshiell/anaconda3/include/qt/QtWidgets
 		include/Utility.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o FloorPanel.o src/FloorPanel.cpp
 
-Controller.o: src/Controller.cpp include/Controller.h \
+ControllerInterface.o: src/ControllerInterface.cpp include/ControllerInterface.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
 		/home/nickshiell/anaconda3/include/qt/QtCore/qobject.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs.h \
@@ -2463,8 +2705,130 @@ Controller.o: src/Controller.cpp include/Controller.h \
 		include/Elevator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
-		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Controller.o src/Controller.cpp
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/BuildingPanel.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ControllerInterface.o src/ControllerInterface.cpp
+
+MyController.o: src/MyController.cpp include/MyController.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobject.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qnamespace.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qconfig.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlogging.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qflags.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmutex.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qnumeric.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstring.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qchar.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbytearray.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qrefcount.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qarraydata.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringview.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qiterator.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qpair.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvector.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qpoint.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringlist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qregexp.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmetatype.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobject_impl.h \
+		include/ControllerInterface.h \
+		include/Utility.h \
+		include/Floor.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmargins.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qrect.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsize.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpalette.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qcolor.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qrgb.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qrgba64.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qbrush.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qmatrix.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpolygon.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qregion.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qdatastream.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qiodevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qline.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtransform.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qimage.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpixmap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qshareddata.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qhash.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfont.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qcursor.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qevent.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvariant.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qdebug.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtextstream.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlocale.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qset.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qurl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qurlquery.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qfile.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qvector2d.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		include/FloorPanel.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QPushButton \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qicon.h \
+		include/Person.h \
+		include/Elevator.h \
+		include/ElevatorPanel.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/BuildingPanel.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MyController.o src/MyController.cpp
 
 GraphicalController.o: src/GraphicalController.cpp include/GraphicalController.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
@@ -2566,7 +2930,7 @@ GraphicalController.o: src/GraphicalController.cpp include/GraphicalController.h
 		/home/nickshiell/anaconda3/include/qt/QtGui/qfont.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/qfontmetrics.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
-		include/Controller.h \
+		include/ControllerInterface.h \
 		include/Utility.h \
 		include/Floor.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
@@ -2591,7 +2955,8 @@ GraphicalController.o: src/GraphicalController.cpp include/GraphicalController.h
 		include/Elevator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
-		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/BuildingPanel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GraphicalController.o src/GraphicalController.cpp
 
 Floor.o: src/Floor.cpp include/Floor.h \
@@ -2947,14 +3312,17 @@ ElevatorPanel.o: src/ElevatorPanel.cpp include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QString
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ElevatorPanel.o src/ElevatorPanel.cpp
 
-moc_MyGraphicsWindow.o: moc_MyGraphicsWindow.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_MyGraphicsWindow.o moc_MyGraphicsWindow.cpp
+moc_GraphicsWindow.o: moc_GraphicsWindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GraphicsWindow.o moc_GraphicsWindow.cpp
+
+moc_BuildingPanel.o: moc_BuildingPanel.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_BuildingPanel.o moc_BuildingPanel.cpp
 
 moc_FloorPanel.o: moc_FloorPanel.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_FloorPanel.o moc_FloorPanel.cpp
 
-moc_Controller.o: moc_Controller.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_Controller.o moc_Controller.cpp
+moc_ControllerInterface.o: moc_ControllerInterface.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_ControllerInterface.o moc_ControllerInterface.cpp
 
 moc_GraphicalController.o: moc_GraphicalController.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_GraphicalController.o moc_GraphicalController.cpp

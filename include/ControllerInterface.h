@@ -11,8 +11,11 @@
 
 #include "include/Utility.h"
 #include "include/Floor.h"
-#include "include/FloorPanel.h"
 #include "include/Elevator.h"
+
+#include "include/FloorPanel.h"
+#include "include/ElevatorPanel.h"
+#include "include/BuildingPanel.h"
 
 class ControllerInterface : public QObject
 {
@@ -37,13 +40,28 @@ public slots:
 
     void HandleServiceRequest(const ServiceRequest request);
 
-private:
+    void HandleFireAlarm(const int level);
 
-    void mandatoryStep(const float timeStep);
-    virtual void userStep(const float timeStep) = 0;
+    void HandlePowerOutageAlarm();
+
+protected:
 
     ElevatorSharedPtrVector elevators_;
     FloorSharedPtrVector floors_;
+
+    BuildingPanelSharedPtr buildingPanel_;
+
+    ServiceRequestVector pendingRequests_;
+
+private:
+
+    void mandatoryStep(const float timeStep);
+    
+    virtual void userStep(const float timeStep) = 0;
+
+    virtual void handleFireAlarm(const int level) = 0;
+
+    virtual void handlePowerOutageAlarm() = 0;
 };
 
 #endif

@@ -68,7 +68,7 @@ static const uint qt_meta_data_Controller[] = {
        0        // eod
 };
 
-void Controller::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void MyController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         auto *_t = static_cast<Controller *>(_o);
@@ -91,12 +91,12 @@ QT_INIT_METAOBJECT const QMetaObject Controller::staticMetaObject = { {
 } };
 
 
-const QMetaObject *Controller::metaObject() const
+const QMetaObject *MyController::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *Controller::qt_metacast(const char *_clname)
+void *MyController::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_Controller.stringdata0))
@@ -104,7 +104,7 @@ void *Controller::qt_metacast(const char *_clname)
     return QObject::qt_metacast(_clname);
 }
 
-int Controller::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int MyController::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QObject::qt_metacall(_c, _id, _a);
     if (_id < 0)

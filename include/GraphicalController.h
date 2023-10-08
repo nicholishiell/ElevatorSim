@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 
-#include "include/Controller.h"
+#include "include/ControllerInterface.h"
 
 #include "include/Utility.h"
 
@@ -18,7 +18,7 @@ class GraphicalController : public QObject, public QGraphicsItem
     Q_OBJECT
 
 public:
-    GraphicalController(const Controller * aController); 
+    GraphicalController(const ControllerInterface * aController); 
             
     virtual ~GraphicalController();   
 
@@ -33,7 +33,7 @@ protected:
 
 private:
 
-    const Controller * aController_;
+    const ControllerInterface * aController_;
 
     QPixmap drawFloor(const FloorSharedPtr floor);
     QPixmap drawElevatorOnFloor(const ElevatorSharedPtr elevator, 

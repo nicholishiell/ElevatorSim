@@ -1,6 +1,6 @@
 #include "include/GraphicalController.h"
 
-GraphicalController::GraphicalController(const Controller * aController)
+GraphicalController::GraphicalController(const ControllerInterface * aController)
 {
     aController_ = aController;
 }

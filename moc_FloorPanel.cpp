@@ -23,7 +23,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_FloorPanel_t {
     QByteArrayData data[9];
-    char stringdata0[118];
+    char stringdata0[126];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,18 +33,18 @@ struct qt_meta_stringdata_FloorPanel_t {
 static const qt_meta_stringdata_FloorPanel_t qt_meta_stringdata_FloorPanel = {
     {
 QT_MOC_LITERAL(0, 0, 10), // "FloorPanel"
-QT_MOC_LITERAL(1, 11, 11), // "UpRequested"
-QT_MOC_LITERAL(2, 23, 0), // ""
-QT_MOC_LITERAL(3, 24, 5), // "level"
-QT_MOC_LITERAL(4, 30, 13), // "DownRequested"
-QT_MOC_LITERAL(5, 44, 16), // "UpButtonPresssed"
-QT_MOC_LITERAL(6, 61, 18), // "DownButtonPresssed"
-QT_MOC_LITERAL(7, 80, 19), // "DownRequestServiced"
-QT_MOC_LITERAL(8, 100, 17) // "UpRequestServiced"
+QT_MOC_LITERAL(1, 11, 16), // "ServiceRequested"
+QT_MOC_LITERAL(2, 28, 0), // ""
+QT_MOC_LITERAL(3, 29, 14), // "ServiceRequest"
+QT_MOC_LITERAL(4, 44, 7), // "request"
+QT_MOC_LITERAL(5, 52, 16), // "UpButtonPresssed"
+QT_MOC_LITERAL(6, 69, 18), // "DownButtonPresssed"
+QT_MOC_LITERAL(7, 88, 19), // "DownRequestServiced"
+QT_MOC_LITERAL(8, 108, 17) // "UpRequestServiced"
 
     },
-    "FloorPanel\0UpRequested\0\0level\0"
-    "DownRequested\0UpButtonPresssed\0"
+    "FloorPanel\0ServiceRequested\0\0"
+    "ServiceRequest\0request\0UpButtonPresssed\0"
     "DownButtonPresssed\0DownRequestServiced\0"
     "UpRequestServiced"
 };
@@ -56,26 +56,24 @@ static const uint qt_meta_data_FloorPanel[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   44,    2, 0x06 /* Public */,
-       4,    1,   47,    2, 0x06 /* Public */,
+       1,    1,   39,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   50,    2, 0x08 /* Private */,
-       6,    0,   51,    2, 0x08 /* Private */,
-       7,    0,   52,    2, 0x0a /* Public */,
-       8,    0,   53,    2, 0x0a /* Public */,
+       5,    0,   42,    2, 0x08 /* Private */,
+       6,    0,   43,    2, 0x08 /* Private */,
+       7,    0,   44,    2, 0x0a /* Public */,
+       8,    0,   45,    2, 0x0a /* Public */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::Int,    3,
-    QMetaType::Void, QMetaType::Int,    3,
+    QMetaType::Void, 0x80000000 | 3,    4,
 
  // slots: parameters
     QMetaType::Void,
@@ -92,27 +90,19 @@ void FloorPanel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         auto *_t = static_cast<FloorPanel *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->UpRequested((*reinterpret_cast< const int(*)>(_a[1]))); break;
-        case 1: _t->DownRequested((*reinterpret_cast< const int(*)>(_a[1]))); break;
-        case 2: _t->UpButtonPresssed(); break;
-        case 3: _t->DownButtonPresssed(); break;
-        case 4: _t->DownRequestServiced(); break;
-        case 5: _t->UpRequestServiced(); break;
+        case 0: _t->ServiceRequested((*reinterpret_cast< const ServiceRequest(*)>(_a[1]))); break;
+        case 1: _t->UpButtonPresssed(); break;
+        case 2: _t->DownButtonPresssed(); break;
+        case 3: _t->DownRequestServiced(); break;
+        case 4: _t->UpRequestServiced(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (FloorPanel::*)(const int );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&FloorPanel::UpRequested)) {
+            using _t = void (FloorPanel::*)(const ServiceRequest & );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&FloorPanel::ServiceRequested)) {
                 *result = 0;
-                return;
-            }
-        }
-        {
-            using _t = void (FloorPanel::*)(const int );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&FloorPanel::DownRequested)) {
-                *result = 1;
                 return;
             }
         }
@@ -148,29 +138,22 @@ int FloorPanel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 5)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 6;
+        _id -= 5;
     }
     return _id;
 }
 
 // SIGNAL 0
-void FloorPanel::UpRequested(const int _t1)
+void FloorPanel::ServiceRequested(const ServiceRequest & _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
-}
-
-// SIGNAL 1
-void FloorPanel::DownRequested(const int _t1)
-{
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
-    QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

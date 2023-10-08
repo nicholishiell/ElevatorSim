@@ -87,13 +87,13 @@ FloorPanel::UpRequestServiced()
 void 
 FloorPanel::UpButtonPresssed()
 {
-    emit UpRequested(level_);
+    emit ServiceRequested(ServiceRequest(level_, RequestDirection::REQ_UP));
     upRequested_ = true;
 }
 
 void 
 FloorPanel::DownButtonPresssed()
 {
-    emit DownRequested(level_);
+    emit ServiceRequested(ServiceRequest(level_, RequestDirection::REQ_DOWN));
     downRequested_ = true;
 }

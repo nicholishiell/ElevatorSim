@@ -15,6 +15,8 @@ class ElevatorPanel;
 class Floor;
 class FloorPanel;
 
+class BuildingPanel;
+
 ///////////////////////////////////////////////////////////////////////////////////////
 // ENUMs
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -69,6 +71,8 @@ using ElevatorPanelSharedPtr = std::shared_ptr<ElevatorPanel>;
 using FloorSharedPtr = std::shared_ptr<Floor>;
 using FloorSharedPtrVector = std::vector<FloorSharedPtr>;
 using FloorPanelSharedPtr = std::shared_ptr<FloorPanel>;
+
+using BuildingPanelSharedPtr = std::shared_ptr<BuildingPanel>;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // CONST
