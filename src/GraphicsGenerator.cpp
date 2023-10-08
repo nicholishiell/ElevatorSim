@@ -1,17 +1,17 @@
-#include "include/GraphicalController.h"
+#include "include/GraphicsGenerator.h"
 
-GraphicalController::GraphicalController(const ControllerInterface * aController)
+GraphicsGenerator::GraphicsGenerator(const BuildingSimulator * buildingSim)
 {
-    aController_ = aController;
+    buildingSim_ = buildingSim;
 }
 
-GraphicalController::~GraphicalController()
+GraphicsGenerator::~GraphicsGenerator()
 {
 
 } 
 
 void 
-GraphicalController::advance(int step)
+GraphicsGenerator::advance(int step)
 {
     if (!step)
         return; 
@@ -20,28 +20,29 @@ GraphicalController::advance(int step)
 }
 
 QRectF 
-GraphicalController::boundingRect() const
+GraphicsGenerator::boundingRect() const
 {
-    auto nFloors = aController_->GetNumberOfFloors();
+    auto nFloors = buildingSim_->GetNumberOfFloors();
     
     return QRectF(0,0,FLOOR_WIDTH, nFloors*FLOOR_HEIGHT);
 }
 
 void 
-GraphicalController::paint( QPainter *painter, 
+GraphicsGenerator::paint(   QPainter *painter, 
                             const QStyleOptionGraphicsItem *option,
                             QWidget *widget)
 { 
+    std::cout << "\n\n\nPAINT\n\n\n";
     // Draw the cartoon representation of the floors
     float y = 0;
    
-    for(int iFloor = aController_->GetNumberOfFloors()-1; iFloor >= 0; iFloor--)
+    for(int iFloor = buildingSim_->GetNumberOfFloors()-1; iFloor >= 0; iFloor--)
     {             
-        auto floorImage = drawFloor(aController_->GetFloor(iFloor));
+        auto floorImage = drawFloor(buildingSim_->GetFloor(iFloor));
 
-        for(u_int iElevator = 0; iElevator  < aController_->GetNumberOfElevators(); iElevator++)
+        for(u_int iElevator = 0; iElevator  < buildingSim_->GetNumberOfElevators(); iElevator++)
         {
-            floorImage = drawElevatorOnFloor(   aController_->GetElevator(iElevator),
+            floorImage = drawElevatorOnFloor(   buildingSim_->GetElevator(iElevator),
                                                 floorImage,
                                                 iFloor,
                                                 iElevator);
@@ -55,15 +56,15 @@ GraphicalController::paint( QPainter *painter,
     // Draw the basic drawing of the elevators locations
     painter->setPen(QColor(0,0,255));
 
-    auto totalHeightPixels = (0.35*FLOOR_HEIGHT+ 10) * aController_->GetNumberOfFloors();
-    auto totalHeightMeters = FLOOR_HEIGHT_METERS * aController_->GetNumberOfFloors();
+    auto totalHeightPixels = (0.35*FLOOR_HEIGHT+ 10) * buildingSim_->GetNumberOfFloors();
+    auto totalHeightMeters = FLOOR_HEIGHT_METERS * buildingSim_->GetNumberOfFloors();
 
     // TODO: this should be a const in utility
     auto elevator_height = 100;
 
-    for(u_int iElevator = 0; iElevator  < aController_->GetNumberOfElevators(); iElevator++)
+    for(u_int iElevator = 0; iElevator  < buildingSim_->GetNumberOfElevators(); iElevator++)
     {
-        auto elevator = aController_->GetElevator(iElevator);
+        auto elevator = buildingSim_->GetElevator(iElevator);
         auto elevatorHeightMeters = elevator->GetHeight();
 
         auto elevatorX = (0.35*FLOOR_WIDTH + 100 +iElevator*125);
@@ -74,7 +75,7 @@ GraphicalController::paint( QPainter *painter,
 }
 
 QPixmap 
-GraphicalController::drawFloor(const FloorSharedPtr floor)
+GraphicsGenerator::drawFloor(const FloorSharedPtr floor)
 {
     // Get the base floor image
     QPixmap floorImage;
@@ -97,7 +98,7 @@ GraphicalController::drawFloor(const FloorSharedPtr floor)
     
     QPixmap elevatorLightImage;
     // Get the elevator lights with correct state (on/off)
-    for(int i = 0; i < aController_->GetNumberOfElevators(); i++)
+    for(int i = 0; i < buildingSim_->GetNumberOfElevators(); i++)
     {
         if(floor->GetPanel()->GetElevatorLightState(i) == LightState::ON)        
         {    
@@ -124,7 +125,7 @@ GraphicalController::drawFloor(const FloorSharedPtr floor)
 }
 
 QPixmap 
-GraphicalController::drawElevatorOnFloor(   const ElevatorSharedPtr elevator, 
+GraphicsGenerator::drawElevatorOnFloor(   const ElevatorSharedPtr elevator, 
                                             QPixmap floorImage, 
                                             const int floorIndex, 
                                             const int elevatorIndex)

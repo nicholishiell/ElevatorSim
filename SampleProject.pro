@@ -9,10 +9,11 @@ INCLUDEPATH += .
 # Input
 HEADERS +=  include/GraphicsWindow.h \
             include/BuildingPanel.h \
+            include/BuildingSimulator.h \
             include/FloorPanel.h \
             include/MyController.h \
-            include/ControllerInterface.h \
-            include/GraphicalController.h \
+            include/Controller.h \
+            include/GraphicsGenerator.h \
             include/Floor.h \
             include/Elevator.h \
             include/Floor.h \
@@ -23,10 +24,11 @@ HEADERS +=  include/GraphicsWindow.h \
 SOURCES +=  main.cpp \
             src/GraphicsWindow.cpp \
             src/BuildingPanel.cpp \
+            src/BuildingSimulator.cpp \
             src/FloorPanel.cpp \
-            src/ControllerInterface.cpp \
+            src/Controller.cpp \
             src/MyController.cpp \
-            src/GraphicalController.cpp \
+            src/GraphicsGenerator.cpp \
             src/Floor.cpp \
             src/Elevator.cpp \
             src/ElevatorPanel.cpp

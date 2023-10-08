@@ -1,7 +1,7 @@
 #include "include/MyController.h"
 
 
-MyController::MyController() : ControllerInterface()
+MyController::MyController() : Controller()
 {
 
 
@@ -13,19 +13,19 @@ MyController::~MyController()
 } 
 
 void 
-MyController::handleFireAlarm(const int level)
+MyController::HandleFireAlarm(const int level)
 {
     std::cout << "handleFireAlarm" << std::endl;
 }
 
 void 
-MyController::handlePowerOutageAlarm()
+MyController::HandlePowerOutageAlarm()
 {
     std::cout << "handlePowerOutageAlarm" << std::endl;
 }
 
 void 
-MyController::userStep(const float timeStep)
+MyController::Step(const float timeStep)
 {
     this->updateFloorPanels();
 

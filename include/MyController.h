@@ -9,25 +9,25 @@
 #include <string>
 #include <cmath>
 
-#include "include/ControllerInterface.h"
+#include "include/Controller.h"
 
-class MyController : public ControllerInterface
+class MyController : public Controller
 {
 
 public:
     MyController(); 
     virtual ~MyController();   
 
+    // Concrete definitions of pure virtual functions inherited from Controller Interface
+    void Step(const float timeStep);
+
+    void HandleFireAlarm(const int level);
+
+    void HandlePowerOutageAlarm();
+
 private:
 
-    // Concrete definitions of pure virtual functions inherited from Controller Interface
-    void handleFireAlarm(const int level);
-
-    void handlePowerOutageAlarm();
-
-    void userStep(const float timeStep);
-
-    // Helper functions for userStep implementation
+    // Helper functions for Step implementation
     void updateFloorPanels();
 
     void assignServiceRequests();

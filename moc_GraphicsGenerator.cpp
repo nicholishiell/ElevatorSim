@@ -1,5 +1,5 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'GraphicalController.h'
+** Meta object code from reading C++ file 'GraphicsGenerator.h'
 **
 ** Created by: The Qt Meta Object Compiler version 67 (Qt 5.15.2)
 **
@@ -7,11 +7,11 @@
 *****************************************************************************/
 
 #include <memory>
-#include "include/GraphicalController.h"
+#include "include/GraphicsGenerator.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'GraphicalController.h' doesn't include <QObject>."
+#error "The header file 'GraphicsGenerator.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
 #error "This file was generated using the moc from 5.15.2. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -21,25 +21,25 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-struct qt_meta_stringdata_GraphicalController_t {
+struct qt_meta_stringdata_GraphicsGenerator_t {
     QByteArrayData data[1];
-    char stringdata0[20];
+    char stringdata0[18];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_GraphicalController_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_GraphicsGenerator_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
-static const qt_meta_stringdata_GraphicalController_t qt_meta_stringdata_GraphicalController = {
+static const qt_meta_stringdata_GraphicsGenerator_t qt_meta_stringdata_GraphicsGenerator = {
     {
-QT_MOC_LITERAL(0, 0, 19) // "GraphicalController"
+QT_MOC_LITERAL(0, 0, 17) // "GraphicsGenerator"
 
     },
-    "GraphicalController"
+    "GraphicsGenerator"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_GraphicalController[] = {
+static const uint qt_meta_data_GraphicsGenerator[] = {
 
  // content:
        8,       // revision
@@ -55,7 +55,7 @@ static const uint qt_meta_data_GraphicalController[] = {
        0        // eod
 };
 
-void GraphicalController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void GraphicsGenerator::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     Q_UNUSED(_o);
     Q_UNUSED(_id);
@@ -63,32 +63,32 @@ void GraphicalController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
     Q_UNUSED(_a);
 }
 
-QT_INIT_METAOBJECT const QMetaObject GraphicalController::staticMetaObject = { {
+QT_INIT_METAOBJECT const QMetaObject GraphicsGenerator::staticMetaObject = { {
     QMetaObject::SuperData::link<QObject::staticMetaObject>(),
-    qt_meta_stringdata_GraphicalController.data,
-    qt_meta_data_GraphicalController,
+    qt_meta_stringdata_GraphicsGenerator.data,
+    qt_meta_data_GraphicsGenerator,
     qt_static_metacall,
     nullptr,
     nullptr
 } };
 
 
-const QMetaObject *GraphicalController::metaObject() const
+const QMetaObject *GraphicsGenerator::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *GraphicalController::qt_metacast(const char *_clname)
+void *GraphicsGenerator::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_GraphicalController.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_GraphicsGenerator.stringdata0))
         return static_cast<void*>(this);
     if (!strcmp(_clname, "QGraphicsItem"))
         return static_cast< QGraphicsItem*>(this);
     return QObject::qt_metacast(_clname);
 }
 
-int GraphicalController::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int GraphicsGenerator::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QObject::qt_metacall(_c, _id, _a);
     return _id;

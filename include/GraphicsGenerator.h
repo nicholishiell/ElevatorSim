@@ -9,18 +9,17 @@
 #include <iostream>
 #include <string>
 
-#include "include/ControllerInterface.h"
-
+#include "include/BuildingSimulator.h"
 #include "include/Utility.h"
 
-class GraphicalController : public QObject, public QGraphicsItem
+class GraphicsGenerator : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 
 public:
-    GraphicalController(const ControllerInterface * aController); 
+    GraphicsGenerator(const BuildingSimulator* buildingSim); 
             
-    virtual ~GraphicalController();   
+    virtual ~GraphicsGenerator();   
 
     QRectF boundingRect() const override;
 
@@ -33,7 +32,7 @@ protected:
 
 private:
 
-    const ControllerInterface * aController_;
+    const BuildingSimulator* buildingSim_;
 
     QPixmap drawFloor(const FloorSharedPtr floor);
     QPixmap drawElevatorOnFloor(const ElevatorSharedPtr elevator, 

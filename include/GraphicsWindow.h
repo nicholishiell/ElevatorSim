@@ -15,8 +15,8 @@
 
 #include <iostream>
 
-#include "include/ControllerInterface.h"
-#include "include/GraphicalController.h"
+#include "include/BuildingSimulator.h"
+#include "include/GraphicsGenerator.h"
 
 class GraphicsWindow  : public QMainWindow
 {
@@ -24,11 +24,9 @@ class GraphicsWindow  : public QMainWindow
     Q_OBJECT
 
 public:
-    GraphicsWindow(QWidget *parent = nullptr);
+    GraphicsWindow(BuildingSimulator* buildingSim);
     virtual ~GraphicsWindow(); 
     
-    void AddController(ControllerInterface* controller);
-
 public slots:
 
     void PlaySimulation();
@@ -48,8 +46,8 @@ private:
     QPushButton* stopButton_;
     QPushButton* stepButton_;
 
-    GraphicalController* graphicalController_;
-    ControllerInterface* controller_;
+    GraphicsGenerator* graphicsGenerator_;
+    BuildingSimulator* buildingSimulator_;
 
     int timeStepMilliseconds = 30;
     float timeStepSeconds = 0.03;

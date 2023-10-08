@@ -1,7 +1,10 @@
 #include "include/GraphicsWindow.h"
 
-GraphicsWindow::GraphicsWindow(QWidget *parent)  : QMainWindow(parent)
+GraphicsWindow::GraphicsWindow(BuildingSimulator* buildingSim)  : QMainWindow(nullptr)
 {
+    buildingSimulator_ = buildingSim;
+    graphicsGenerator_ = new GraphicsGenerator(buildingSimulator_);
+
     this->resize(800,600);
 
     auto graphcFrame = new QFrame;
@@ -46,14 +49,6 @@ GraphicsWindow::GraphicsWindow(QWidget *parent)  : QMainWindow(parent)
     QObject::connect(aniTimer_, &QTimer::timeout, scene_, &QGraphicsScene::advance);
 }
 
-void 
-GraphicsWindow::AddController(ControllerInterface* controller)
-{
-    graphicalController_ = new GraphicalController(controller);
-    scene_->addItem(graphicalController_);
-
-    controller_ = controller;
-}
 
 GraphicsWindow::~GraphicsWindow()
 {
@@ -63,10 +58,9 @@ GraphicsWindow::~GraphicsWindow()
 void 
 GraphicsWindow::UpdateSimulationOneStep()
 {
-    controller_->Step(timeStepSeconds);
-    graphicalController_->update();
+    buildingSimulator_->Step(timeStepSeconds);
+    graphicsGenerator_->update();
 }
-
 
 void 
 GraphicsWindow::PlaySimulation()
