@@ -32,7 +32,6 @@ GraphicsGenerator::paint(   QPainter *painter,
                             const QStyleOptionGraphicsItem *option,
                             QWidget *widget)
 { 
-    std::cout << "\n\n\nPAINT\n\n\n";
     // Draw the cartoon representation of the floors
     float y = 0;
    

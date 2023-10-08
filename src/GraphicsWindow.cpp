@@ -14,6 +14,7 @@ GraphicsWindow::GraphicsWindow(BuildingSimulator* buildingSim)  : QMainWindow(nu
     scene_ = new QGraphicsScene();
     scene_->setSceneRect(0, 0, 800, 600);
     scene_->setItemIndexMethod(QGraphicsScene::NoIndex);
+    scene_->addItem(graphicsGenerator_);
 
     viewer_ = new QGraphicsView(scene_);    
     viewer_->setCacheMode(QGraphicsView::CacheBackground);
