@@ -41,10 +41,6 @@ private:
 
     ServiceRequestVector pendingRequests_;
 
-    // Helper functions for Step implementation
-    void updateFloorPanels( ElevatorSharedPtrVector elevators,
-                            FloorSharedPtrVector floors);
-
     void assignServiceRequests( ElevatorSharedPtrVector elevators,
                                 FloorSharedPtrVector floors);
 };

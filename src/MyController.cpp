@@ -41,42 +41,7 @@ MyController::Step( const float timeStep,
                     ElevatorSharedPtrVector elevators,
                     FloorSharedPtrVector floors)
 {
-    this->updateFloorPanels(elevators, floors);
-
     this->assignServiceRequests(elevators, floors);
-}
-
-
-void 
-MyController::updateFloorPanels(ElevatorSharedPtrVector elevators,
-                                FloorSharedPtrVector floors)
-{
-    for(auto floor : floors)
-        floor->GetPanel()->LightsOut();
-
-    for(int i = 0; i < elevators.size(); i++)
-    {
-        auto elevator = elevators[i];
-        auto level = elevator->GetLevel();
-        auto currentRequest = elevator->GetCurrentlyServicing();
-
-        // Turn elevator light for the floor it is currently on
-        floors[level]->GetPanel()->SetElevatorLight(i, LightState::ON);
-
-        if(currentRequest.level == level)
-        {            
-            // turn off service call lights
-            if(currentRequest.direction == RequestDirection::REQ_UP)
-            {
-                floors[currentRequest.level]->GetPanel()->UpRequestServiced();
-            }
-            else if(currentRequest.direction == RequestDirection::REQ_DOWN)
-            {
-                floors[currentRequest.level]->GetPanel()->DownRequestServiced();
-            }
-
-        }
-    }
 }
 
 void 

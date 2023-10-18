@@ -86,6 +86,7 @@ BuildingSimulator::Step(const float timeStep)
 {
     this->mandatoryStep(timeStep);
 
+    // Let the user defined controller do any periodic work it needs to do
     controller_->Step(timeStep, elevators_, floors_);
 }
 
@@ -99,5 +100,40 @@ BuildingSimulator::mandatoryStep(const float timeStep)
         elevator->Update(timeStep);
     }
 
+    // Update the floors
+    this->updateFloors();
+
     // TODO: Next update the people in the building
+    // this->updatePeople()
+}
+
+void 
+BuildingSimulator::updateFloors()
+{
+    for(auto floor : floors_)
+        floor->GetPanel()->LightsOut();
+
+    for(int i = 0; i < elevators_.size(); i++)
+    {
+        auto elevator = elevators_[i];
+        auto level = elevator->GetLevel();
+        auto currentRequest = elevator->GetCurrentlyServicing();
+
+        // Turn elevator light for the floor it is currently on
+        floors_[level]->GetPanel()->SetElevatorLight(i, LightState::ON);
+
+        if(currentRequest.level == level)
+        {            
+            // turn off service call lights
+            if(currentRequest.direction == RequestDirection::REQ_UP)
+            {
+                floors_[currentRequest.level]->GetPanel()->UpRequestServiced();
+            }
+            else if(currentRequest.direction == RequestDirection::REQ_DOWN)
+            {
+                floors_[currentRequest.level]->GetPanel()->DownRequestServiced();
+            }
+
+        }
+    }
 }

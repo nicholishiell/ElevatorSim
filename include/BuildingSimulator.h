@@ -46,6 +46,8 @@ private:
 
     void mandatoryStep(const float timeStep);
     
+    void updateFloors();
+
     // Private Members
     ElevatorSharedPtrVector elevators_;
     FloorSharedPtrVector floors_;
