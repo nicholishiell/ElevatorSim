@@ -34,8 +34,6 @@ public:
     ElevatorSharedPtr GetElevator(const int i) const {return elevators_[i];}
     FloorSharedPtr GetFloor(const int i) const {return floors_[i];}
 
-    ControllerSharedPtr GetController() const {return controller_;}
-
     void Step(const float timeStep);
 
 public slots:
