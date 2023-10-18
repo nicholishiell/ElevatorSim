@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = SampleProject
+TARGET = ElevatorSim
 INCLUDEPATH += . 
 
 # Input

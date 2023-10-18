@@ -16,6 +16,7 @@
 #include "include/FloorPanel.h"
 #include "include/ElevatorPanel.h"
 #include "include/BuildingPanel.h"
+#include "include/BuildingSimulator.h"
 
 class Controller : public QObject
 {
@@ -25,26 +26,21 @@ public:
     Controller(); 
     virtual ~Controller(); 
 
-    void AddServiceRequest(const ServiceRequest request);  
-
-    void AddFloor(FloorSharedPtr floor) {floors_.emplace_back(floor);}
-    void AddElevator(ElevatorSharedPtr elevator) {elevators_.emplace_back(elevator);}
-
-    virtual void Step(const float timeStep) = 0;
+    virtual void Step(  const float timeStep, 
+                        ElevatorSharedPtrVector elevators,
+                        FloorSharedPtrVector floors) = 0;
     
-    virtual void HandleFireAlarm(const int level) = 0;
-
-    virtual void HandlePowerOutageAlarm() = 0;
-
-protected:
-   
-    // Protected Members
-
-    ServiceRequestVector pendingRequests_;
-
-    ElevatorSharedPtrVector elevators_;
+    virtual void HandleServiceRequest(  const ServiceRequest request, 
+                                        ElevatorSharedPtrVector elevators,
+                                        FloorSharedPtrVector floors) = 0;
     
-    FloorSharedPtrVector floors_;
+    virtual void HandleFireAlarm(   const int level,
+                                    ElevatorSharedPtrVector elevators,
+                                    FloorSharedPtrVector floors) = 0;
+
+    virtual void HandlePowerOutageAlarm(ElevatorSharedPtrVector elevators,
+                                        FloorSharedPtrVector floors) = 0;
+
 };
 
 #endif

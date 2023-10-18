@@ -46,10 +46,6 @@ public slots:
 
 private:
 
-    // Private Methods
-    void addElevator(ElevatorSharedPtr elevator);
-    void addFloor(FloorSharedPtr floor);
-
     void mandatoryStep(const float timeStep);
     
     // Private Members

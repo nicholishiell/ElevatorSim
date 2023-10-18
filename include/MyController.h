@@ -18,20 +18,35 @@ public:
     MyController(); 
     virtual ~MyController();   
 
-    // Concrete definitions of pure virtual functions inherited from Controller Interface
-    void Step(const float timeStep);
+    // Concrete definition 
+    void Step(  const float timeStep, 
+                ElevatorSharedPtrVector elevators,
+                FloorSharedPtrVector floors);
+    
+    // Concrete definition 
+    void HandleServiceRequest(  const ServiceRequest request, 
+                                ElevatorSharedPtrVector elevators,
+                                FloorSharedPtrVector floors);
+    
+    // Concrete definition 
+    void HandleFireAlarm(   const int level,
+                            ElevatorSharedPtrVector elevators,
+                            FloorSharedPtrVector floors);
 
-    void HandleFireAlarm(const int level);
-
-    void HandlePowerOutageAlarm();
+    // Concrete definition 
+    void HandlePowerOutageAlarm(ElevatorSharedPtrVector elevators,
+                                FloorSharedPtrVector floors);
 
 private:
 
+    ServiceRequestVector pendingRequests_;
+
     // Helper functions for Step implementation
-    void updateFloorPanels();
+    void updateFloorPanels( ElevatorSharedPtrVector elevators,
+                            FloorSharedPtrVector floors);
 
-    void assignServiceRequests();
-
+    void assignServiceRequests( ElevatorSharedPtrVector elevators,
+                                FloorSharedPtrVector floors);
 };
 
 #endif

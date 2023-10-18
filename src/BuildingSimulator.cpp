@@ -30,7 +30,7 @@ BuildingSimulator::AddFloor(std::string label)
         auto floorPanel = newFloor->GetPanel();
         QObject::connect(floorPanel.get(), &FloorPanel::ServiceRequested, this, &BuildingSimulator::HandleServiceRequest);
 
-        addFloor(newFloor);
+        floors_.emplace_back(newFloor);
 
         for(auto elevator : elevators_)        
             elevator->SetNumberOfFloors(static_cast<int>(floors_.size()));
@@ -52,7 +52,7 @@ BuildingSimulator::AddElevator(std::string label, int level, DoorState state)
         auto numFloors = static_cast<int>(floors_.size());
         auto newElevator = std::make_shared<Elevator>(label, state, level, numFloors);
         
-        addElevator(newElevator);
+        elevators_.emplace_back(newElevator);
 
         for(auto floor : floors_)
             floor->SetNumElevators(static_cast<int>(elevators_.size()));
@@ -61,38 +61,23 @@ BuildingSimulator::AddElevator(std::string label, int level, DoorState state)
         std::cout << "Maximum # of Elevators reached" << std::endl;
 }
 
-
-void 
-BuildingSimulator::addElevator(ElevatorSharedPtr elevator)
-{
-    elevators_.emplace_back(elevator);
-    controller_->AddElevator(elevator);
-}
-
-void 
-BuildingSimulator::addFloor(FloorSharedPtr floor)
-{
-    floors_.emplace_back(floor);
-    controller_->AddFloor(floor);
-}
-
 // Public SLOTS
 void 
 BuildingSimulator::HandleServiceRequest(const ServiceRequest request)
 {
-    controller_->AddServiceRequest(request);
+    controller_->HandleServiceRequest(request, elevators_, floors_);
 }
 
 void 
 BuildingSimulator::HandleFireAlarm(const int level)
 {
-    controller_->HandleFireAlarm(level);
+    controller_->HandleFireAlarm(level, elevators_, floors_);
 }
 
 void 
 BuildingSimulator::HandlePowerOutageAlarm()
 {
-    controller_->HandlePowerOutageAlarm();
+    controller_->HandlePowerOutageAlarm(elevators_, floors_);
 }
 
 //
@@ -101,7 +86,7 @@ BuildingSimulator::Step(const float timeStep)
 {
     this->mandatoryStep(timeStep);
 
-    controller_->Step(timeStep);
+    controller_->Step(timeStep, elevators_, floors_);
 }
 
 void 

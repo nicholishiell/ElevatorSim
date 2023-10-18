@@ -81,5 +81,11 @@
         "__tuple": "cpp",
         "queue": "cpp",
         "stack": "cpp"
-    }
+    },
+    "markdown-mermaid.lightModeTheme": "dark",
+    "markdown-mermaid.languages": [
+    
+
+        "mermaid"
+    ]
 }

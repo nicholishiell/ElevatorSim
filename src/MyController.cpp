@@ -13,51 +13,66 @@ MyController::~MyController()
 } 
 
 void 
-MyController::HandleFireAlarm(const int level)
+MyController::HandleFireAlarm(  const int level,
+                                ElevatorSharedPtrVector elevators,
+                                FloorSharedPtrVector floors)
 {
     std::cout << "handleFireAlarm" << std::endl;
 }
 
 void 
-MyController::HandlePowerOutageAlarm()
+MyController::HandlePowerOutageAlarm(   ElevatorSharedPtrVector elevators,
+                                        FloorSharedPtrVector floors)
 {
     std::cout << "handlePowerOutageAlarm" << std::endl;
 }
 
 void 
-MyController::Step(const float timeStep)
+MyController::HandleServiceRequest( const ServiceRequest request,
+                                    ElevatorSharedPtrVector elevators,
+                                    FloorSharedPtrVector floors)
 {
-    this->updateFloorPanels();
+    std::cout << "handleServiceRequest" << std::endl;
+    pendingRequests_.emplace_back(request);
+}
 
-    this->assignServiceRequests();
+void 
+MyController::Step( const float timeStep,
+                    ElevatorSharedPtrVector elevators,
+                    FloorSharedPtrVector floors)
+{
+    this->updateFloorPanels(elevators, floors);
+
+    this->assignServiceRequests(elevators, floors);
 }
 
 
 void 
-MyController::updateFloorPanels()
+MyController::updateFloorPanels(ElevatorSharedPtrVector elevators,
+                                FloorSharedPtrVector floors)
 {
-    for(auto floor : floors_)
+    for(auto floor : floors)
         floor->GetPanel()->LightsOut();
 
-    for(int i = 0; i < elevators_.size(); i++)
+    for(int i = 0; i < elevators.size(); i++)
     {
-        auto elevator = elevators_[i];
+        auto elevator = elevators[i];
         auto level = elevator->GetLevel();
         auto currentRequest = elevator->GetCurrentlyServicing();
 
         // Turn elevator light for the floor it is currently on
-        floors_[level]->GetPanel()->SetElevatorLight(i, LightState::ON);
+        floors[level]->GetPanel()->SetElevatorLight(i, LightState::ON);
 
         if(currentRequest.level == level)
         {            
             // turn off service call lights
             if(currentRequest.direction == RequestDirection::REQ_UP)
             {
-                floors_[currentRequest.level]->GetPanel()->UpRequestServiced();
+                floors[currentRequest.level]->GetPanel()->UpRequestServiced();
             }
             else if(currentRequest.direction == RequestDirection::REQ_DOWN)
             {
-                floors_[currentRequest.level]->GetPanel()->DownRequestServiced();
+                floors[currentRequest.level]->GetPanel()->DownRequestServiced();
             }
 
         }
@@ -65,7 +80,8 @@ MyController::updateFloorPanels()
 }
 
 void 
-MyController::assignServiceRequests()
+MyController::assignServiceRequests(ElevatorSharedPtrVector elevators,
+                                    FloorSharedPtrVector floors)
 {   
     std::cout << "PendingJobs: " << std::endl;
     for(auto r : pendingRequests_)
@@ -82,7 +98,7 @@ MyController::assignServiceRequests()
         ElevatorSharedPtr assignedElevator = nullptr;
         
         // Loop over all the elevators to see which ones can service the request
-        for(auto elevator : elevators_)
+        for(auto elevator : elevators)
         {
             // Skip elevators that aren't in states UP/DOWN/IDLE
             if( elevator->GetState() != ElevatorState::UP &&  
