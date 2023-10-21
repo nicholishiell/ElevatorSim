@@ -12,12 +12,6 @@
 #include "include/Utility.h"
 #include "include/AnimatedImage.h"
 
-class FloorPressButton
-{
-
-};
-
-
 class ElevatorPanel : public QWidget
 {
     Q_OBJECT
@@ -28,9 +22,6 @@ public:
                     QWidget *parent = nullptr); 
     virtual ~ElevatorPanel();   
 
-    std::string GetDisplayMsg() {return displayMsg_;}
-    void SetDisplayMsg(std::string msg) {displayMsg_ = msg;}
-
     ServiceRequestVector PopRequests();
 
     void RingBell();
@@ -38,6 +29,9 @@ public:
     void DisplayMessage(const std::string& msg);
 
     void AudioMessage();
+
+    void SetOverloadState(const bool s);
+    void SetDoorObstructedState(const bool s);
 
 private slots:
 
@@ -56,9 +50,10 @@ private:
     std::string label_;
     int numFloors_;
     
-    std::string displayMsg_ = "Display Msg";
-    bool isOverloaded_ = false;
-    bool isObstructed_ = false;
+    QLabel* displayLabel_;
+
+    QLabel* obstructedLabel_; 
+    QLabel* overloadLabel_;
 
     AnimatedImage* bell_;
     AnimatedImage* speaker_;

@@ -1,5 +1,7 @@
 #include "include/Elevator.h"
+
 #include <cmath>
+#include <sstream>  
 
 Elevator::Elevator( const std::string label, DoorState doorState, int level, int numFloors)
 {
@@ -14,6 +16,8 @@ Elevator::Elevator( const std::string label, DoorState doorState, int level, int
 
     numberOfFloors_ = numFloors;
     panel_ = std::make_shared<ElevatorPanel>(label,numFloors);
+
+    maxWeight_ = 500.;
 }
 
 Elevator::~Elevator()
@@ -138,6 +142,16 @@ Elevator::Update(const float timeStep)
         std::cout << "Elevator::Update: Unknown state!" << std::endl;    
 }
 
+std::string
+int_to_string(const int i)
+{
+    std::stringstream ss;
+    std::string s;
+    ss << i;
+    ss >> s;
+    return s;
+}
+
 void 
 Elevator::updateCurrentLevel()
 {
@@ -146,19 +160,42 @@ Elevator::updateCurrentLevel()
         if( std::fabs(height_ - i*FLOOR_HEIGHT_METERS) < 0.01 )
             currentLevel_ = i; 
     }
+
+    panel_->DisplayMessage(int_to_string(currentLevel_));
 }
 
 ServiceRequest 
 Elevator::popRoute()
-{    
-    //assert(!route_.empty());
-    
+{      
     auto nextRequest = route_[0];
     route_.front() = std::move(route_.back());
     route_.pop_back();
 
     return nextRequest;
 }
+
+bool 
+Elevator::checkOverloaded()
+{
+    float currentWeight = 0.;
+    for(auto person : passengers_)
+        currentWeight = currentWeight + person.GetWeight();
+
+    auto overloaded = currentWeight > maxWeight_;
+
+    if(overloaded)
+        panel_->SetOverloadState(overloaded);
+
+    return overloaded;
+}
+
+bool 
+Elevator::checkDoorObstructed()
+{
+    panel_->SetOverloadState(doorObstructed_);
+    return doorObstructed_;
+}
+
 
 void Elevator::idle(const float timeStep)
 {

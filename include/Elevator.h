@@ -8,6 +8,7 @@
 
 #include "include/Utility.h"
 #include "include/ElevatorPanel.h"
+#include "include/Person.h"
 
 class Elevator : public QObject
 {
@@ -44,6 +45,10 @@ public:
 
 private:
 
+    bool checkOverloaded();
+
+    bool checkDoorObstructed();
+
     void up(const float timeStep);
     void down(const float timeStep);
     void arrived(const float timeStep);
@@ -63,6 +68,10 @@ private:
 
     float height_;
     float speed_;
+
+    float maxWeight_;
+    bool doorObstructed_;
+
     std::string label_;
 
     float timeSpentWaiting_ = 0.;
@@ -73,6 +82,9 @@ private:
     ElevatorState elevatorState_;
 
     ElevatorPanelSharedPtr panel_;
+
+    PersonVector passengers_;
+
 };
 
 

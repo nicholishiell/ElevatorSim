@@ -36,17 +36,20 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
     gridLayout->addWidget(line1,2,0,1,2);
 
     // Create labels for overloaded, obstructed, and display msg
-    auto obLabel_ = new QLabel("OB");
-    auto olLabel_ = new QLabel("OL");
+    obstructedLabel_ = new QLabel("    OB    ");
+    overloadLabel_ = new QLabel("    OL    ");
 
-    gridLayout->addWidget(obLabel_,3,0,Qt::AlignHCenter);
-    gridLayout->addWidget(olLabel_,3,1,Qt::AlignHCenter);
+    gridLayout->addWidget(obstructedLabel_,3,0,Qt::AlignHCenter);
+    gridLayout->addWidget(overloadLabel_,3,1,Qt::AlignHCenter);
+
+    this->SetDoorObstructedState(false);
+    this->SetOverloadState(false);
 
     auto line2 = new QFrame;
     line2->setFrameShape(QFrame::HLine);
     gridLayout->addWidget(line2,4,0,1,2);
 
-    auto displayLabel_ = new QLabel(QString::fromStdString(displayMsg_));
+    displayLabel_ = new QLabel(QString::fromStdString("Display Msg"));
     gridLayout->addWidget(displayLabel_,5,0,1,2,Qt::AlignHCenter);
 
     auto line3 = new QFrame;
@@ -116,13 +119,36 @@ ElevatorPanel::RingBell()
 void 
 ElevatorPanel::DisplayMessage(const std::string& msg)
 {
-
+    displayLabel_->setText(QString::fromStdString(msg));
+    displayLabel_->repaint();
 }
 
 void 
 ElevatorPanel::AudioMessage()
 {
     speaker_->Animate();
+}
+
+void 
+ElevatorPanel::SetOverloadState(const bool s)
+{
+    if(s)
+        overloadLabel_->setStyleSheet("QLabel { background-color : red; color : black; }");
+    else
+        overloadLabel_->setStyleSheet("QLabel { background-color : green; color : black; }");
+    
+    overloadLabel_->repaint();
+}
+
+void 
+ElevatorPanel::SetDoorObstructedState(const bool s)
+{
+    if(s)
+        obstructedLabel_->setStyleSheet("QLabel { background-color : red; color : black; }");
+    else
+        obstructedLabel_->setStyleSheet("QLabel { background-color : green; color : black; }");
+    
+    obstructedLabel_->repaint();
 }
 
 void 

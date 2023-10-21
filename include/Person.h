@@ -11,7 +11,8 @@ class Person
 public:
     Person( const std::string label, 
             const int currentLevel,
-            const int desiredLevel); 
+            const int desiredLevel,
+            const float weight); 
             
     virtual ~Person(); 
 
@@ -20,12 +21,15 @@ public:
     int GetDesiredLevel() const {return desiredLevel_;}
     int GetCurrentLevel() const {return currentLevel_;}
 
+    float GetWeight() const {return weight_;}
     
 private:
 
     std::string name_;
     int currentLevel_;
     int desiredLevel_;
+
+    float weight_;
 };
 
 #endif
