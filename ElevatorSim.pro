@@ -18,8 +18,9 @@ HEADERS +=  include/GraphicsWindow.h \
             include/Elevator.h \
             include/Floor.h \
             include/ElevatorPanel.h \
-            include/FloorButton.h
-            include/Person.h
+            include/FloorButton.h \
+            include/Person.h \
+            include/AnimatedImage.h
 
 SOURCES +=  main.cpp \
             src/GraphicsWindow.cpp \
@@ -31,8 +32,9 @@ SOURCES +=  main.cpp \
             src/GraphicsGenerator.cpp \
             src/Floor.cpp \
             src/Elevator.cpp \
-            src/ElevatorPanel.cpp
-            src/Person.cpp
+            src/ElevatorPanel.cpp \
+            src/Person.cpp \
+            src/AnimatedImage.cpp
 
 QT += widgets
 QT += gui

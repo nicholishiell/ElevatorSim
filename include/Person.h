@@ -7,7 +7,6 @@
 
 class Person
 {
-    Q_OBJECT
 
 public:
     Person( const std::string label, 

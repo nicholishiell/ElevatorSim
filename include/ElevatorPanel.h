@@ -10,6 +10,7 @@
 #include <string>
 
 #include "include/Utility.h"
+#include "include/AnimatedImage.h"
 
 class FloorPressButton
 {
@@ -32,6 +33,12 @@ public:
 
     ServiceRequestVector PopRequests();
 
+    void RingBell();
+
+    void DisplayMessage(const std::string& msg);
+
+    void AudioMessage();
+
 private slots:
 
     void FireButtonPresssed();
@@ -49,9 +56,12 @@ private:
     std::string label_;
     int numFloors_;
     
-    std::string displayMsg_ = "All Go";
+    std::string displayMsg_ = "Display Msg";
     bool isOverloaded_ = false;
     bool isObstructed_ = false;
+
+    AnimatedImage* bell_;
+    AnimatedImage* speaker_;
 };
 
 #endif

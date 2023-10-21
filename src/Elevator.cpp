@@ -180,6 +180,8 @@ void Elevator::idle(const float timeStep)
 void 
 Elevator::leaving(const float timeStep)
 {
+    panel_->RingBell();
+
     // TODO: to make sure the door is closed and we are not overloaded, or there is a fire
     
     // Get the next route off the route vector
@@ -234,6 +236,8 @@ void Elevator::down(const float timeStep)
 }
 void Elevator::arrived(const float timeStep)
 {
+    panel_->RingBell();
+
     // Restart the wait timer
     timeSpentWaiting_ = 0.;
 

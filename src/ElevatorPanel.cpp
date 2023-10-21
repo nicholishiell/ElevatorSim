@@ -1,6 +1,7 @@
 #include "include/ElevatorPanel.h"
 #include "include/FloorButton.h"
 
+
 #include <QGridLayout>
 #include <QPixmap>
 #include <QLabel>
@@ -32,7 +33,6 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
 
     auto line1 = new QFrame;
     line1->setFrameShape(QFrame::HLine);
-
     gridLayout->addWidget(line1,2,0,1,2);
 
     // Create labels for overloaded, obstructed, and display msg
@@ -42,17 +42,30 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
     gridLayout->addWidget(obLabel_,3,0,Qt::AlignHCenter);
     gridLayout->addWidget(olLabel_,3,1,Qt::AlignHCenter);
 
-    auto displayLabel_ = new QLabel(QString::fromStdString(displayMsg_));
-    gridLayout->addWidget(displayLabel_,4,0,1,2,Qt::AlignHCenter);
-
     auto line2 = new QFrame;
     line2->setFrameShape(QFrame::HLine);
+    gridLayout->addWidget(line2,4,0,1,2);
 
-    gridLayout->addWidget(line2,5,0,1,2);
+    auto displayLabel_ = new QLabel(QString::fromStdString(displayMsg_));
+    gridLayout->addWidget(displayLabel_,5,0,1,2,Qt::AlignHCenter);
+
+    auto line3 = new QFrame;
+    line3->setFrameShape(QFrame::HLine);
+    gridLayout->addWidget(line3,6,0,1,2);
+
+    bell_ = new AnimatedImage("./images/bell/bell_", 9, 0.1, this);
+    gridLayout->addWidget(bell_,7,0,Qt::AlignHCenter);
+
+    speaker_ = new AnimatedImage("./images/speaker/speaker_", 12, 0.15, this);
+    gridLayout->addWidget(speaker_,7,1,Qt::AlignHCenter);
+
+    auto line4 = new QFrame;
+    line4->setFrameShape(QFrame::HLine);
+    gridLayout->addWidget(line4,8,0,1,2);
 
     // Create the floor buttons
     std::vector<QPushButton*> floorButtons;
-    auto row = 6;
+    auto row = 9;
     auto col = 0;
     for(int i = 0; i < numFloors; i++)
     {
@@ -93,6 +106,24 @@ ElevatorPanel::PopRequests()
 
 }
 
+void 
+ElevatorPanel::RingBell()
+{
+    bell_->Animate();
+}
+
+
+void 
+ElevatorPanel::DisplayMessage(const std::string& msg)
+{
+
+}
+
+void 
+ElevatorPanel::AudioMessage()
+{
+    speaker_->Animate();
+}
 
 void 
 ElevatorPanel::OpenButtonPresssed()
@@ -105,7 +136,6 @@ ElevatorPanel::CloseButtonPresssed()
 {
 
 }
-
 
 void 
 ElevatorPanel::FireButtonPresssed()
