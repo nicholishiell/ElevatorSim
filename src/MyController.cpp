@@ -66,21 +66,21 @@ MyController::assignServiceRequests(ElevatorSharedPtrVector elevators,
         for(auto elevator : elevators)
         {
             // Skip elevators that aren't in states UP/DOWN/IDLE
-            if( elevator->GetState() != ElevatorState::UP &&  
-                elevator->GetState() != ElevatorState::DOWN && 
-                elevator->GetState() != ElevatorState::IDLE)
+            if( elevator->GetStateString() != "UP" &&  
+                elevator->GetStateString() != "DOWN" && 
+                elevator->GetStateString() != "IDLE")
                 continue;
 
             // Skip elevators that are going in the wrong direction
-            if( (elevator->GetState() == ElevatorState::UP && request.direction == RequestDirection::REQ_DOWN) ||
-                (elevator->GetState() == ElevatorState::DOWN && request.direction == RequestDirection::REQ_UP) )
+            if( (elevator->GetStateString() == "UP" && request.direction == RequestDirection::REQ_DOWN) ||
+                (elevator->GetStateString() == "DOWN" && request.direction == RequestDirection::REQ_UP) )
                 continue;
 
             // Skip elevators that are already passed the request level
             auto levelDiff = request.level - elevator->GetLevel();
 
-            if( (elevator->GetState() == ElevatorState::UP && levelDiff < 0) ||
-                (elevator->GetState() == ElevatorState::DOWN && levelDiff > 0) )
+            if( (elevator->GetStateString() == "UP" && levelDiff < 0) ||
+                (elevator->GetStateString() == "DOWN" && levelDiff > 0) )
                 continue;
 
             if(std::abs(levelDiff) < minLevelDiff)

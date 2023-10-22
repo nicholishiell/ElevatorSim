@@ -16,6 +16,7 @@ HEADERS +=  include/GraphicsWindow.h \
             include/GraphicsGenerator.h \
             include/Floor.h \
             include/Elevator.h \
+            include/ElevatorState.h \
             include/Floor.h \
             include/ElevatorPanel.h \
             include/FloorButton.h \
@@ -33,6 +34,7 @@ SOURCES +=  main.cpp \
             src/Floor.cpp \
             src/Elevator.cpp \
             src/ElevatorPanel.cpp \
+            src/ElevatorState.cpp \
             src/Person.cpp \
             src/AnimatedImage.cpp
 

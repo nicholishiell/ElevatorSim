@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <sstream>  
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // FORWARD DECLARATIONS
@@ -11,6 +12,7 @@
 
 class Elevator;
 class ElevatorPanel;
+class ElevatorState;
 
 class Floor;
 class FloorPanel;
@@ -28,8 +30,6 @@ class Person;
 enum DoorState{OPEN, CLOSED};
 
 enum LightState{ON,OFF, UNKNOWN};
-
-enum ElevatorState{UP,DOWN,ARRIVED,WAITING,IDLE,STOPPED,LEAVING};
 
 enum RequestDirection{REQ_UP, REQ_DOWN, REQ_IDLE};
 
@@ -74,6 +74,8 @@ using ElevatorSharedPtrVector = std::vector<ElevatorSharedPtr>;
 using ElevatorPanelSharedPtr = std::shared_ptr<ElevatorPanel>;
 using ElevatorPanelSharedPtrVector = std::vector<ElevatorPanelSharedPtr>;
 
+using ElevatorStateUniquePtr = std::unique_ptr<ElevatorState>;
+
 using FloorSharedPtr = std::shared_ptr<Floor>;
 using FloorSharedPtrVector = std::vector<FloorSharedPtr>;
 
@@ -114,6 +116,7 @@ const std::string FLOOR_SIGN_FILE_NAMES[6] = {  "Floor_01.png",
 const float FLOOR_HEIGHT_METERS = 2.;
 const float ELEVATOR_SPEED = 0.5;
 const float ELEVATOR_WAIT_TIME = 3.;
+const float ELEVATOR_MAX_WEIGHT = 500.;
 
 const int MAX_NUMBER_OF_FLOORS = 6;
 const int MAX_NUMBER_OF_ELEVATORS = 4;

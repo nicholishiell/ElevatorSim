@@ -63,6 +63,7 @@ SOURCES       = main.cpp \
 		src/Floor.cpp \
 		src/Elevator.cpp \
 		src/ElevatorPanel.cpp \
+		src/ElevatorState.cpp \
 		src/Person.cpp \
 		src/AnimatedImage.cpp moc_GraphicsWindow.cpp \
 		moc_BuildingPanel.cpp \
@@ -86,6 +87,7 @@ OBJECTS       = main.o \
 		Floor.o \
 		Elevator.o \
 		ElevatorPanel.o \
+		ElevatorState.o \
 		Person.o \
 		AnimatedImage.o \
 		moc_GraphicsWindow.o \
@@ -320,6 +322,7 @@ DIST          = /home/nickshiell/anaconda3/mkspecs/features/spec_pre.prf \
 		include/GraphicsGenerator.h \
 		include/Floor.h \
 		include/Elevator.h \
+		include/ElevatorState.h \
 		include/Floor.h \
 		include/ElevatorPanel.h \
 		include/FloorButton.h \
@@ -335,6 +338,7 @@ DIST          = /home/nickshiell/anaconda3/mkspecs/features/spec_pre.prf \
 		src/Floor.cpp \
 		src/Elevator.cpp \
 		src/ElevatorPanel.cpp \
+		src/ElevatorState.cpp \
 		src/Person.cpp \
 		src/AnimatedImage.cpp
 QMAKE_TARGET  = ElevatorSim
@@ -790,8 +794,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /home/nickshiell/anaconda3/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents include/GraphicsWindow.h include/BuildingPanel.h include/BuildingSimulator.h include/FloorPanel.h include/MyController.h include/Controller.h include/GraphicsGenerator.h include/Floor.h include/Elevator.h include/Floor.h include/ElevatorPanel.h include/FloorButton.h include/Person.h include/AnimatedImage.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp src/GraphicsWindow.cpp src/BuildingPanel.cpp src/BuildingSimulator.cpp src/FloorPanel.cpp src/Controller.cpp src/MyController.cpp src/GraphicsGenerator.cpp src/Floor.cpp src/Elevator.cpp src/ElevatorPanel.cpp src/Person.cpp src/AnimatedImage.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents include/GraphicsWindow.h include/BuildingPanel.h include/BuildingSimulator.h include/FloorPanel.h include/MyController.h include/Controller.h include/GraphicsGenerator.h include/Floor.h include/Elevator.h include/ElevatorState.h include/Floor.h include/ElevatorPanel.h include/FloorButton.h include/Person.h include/AnimatedImage.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp src/GraphicsWindow.cpp src/BuildingPanel.cpp src/BuildingSimulator.cpp src/FloorPanel.cpp src/Controller.cpp src/MyController.cpp src/GraphicsGenerator.cpp src/Floor.cpp src/Elevator.cpp src/ElevatorPanel.cpp src/ElevatorState.cpp src/Person.cpp src/AnimatedImage.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -974,11 +978,17 @@ moc_GraphicsWindow.cpp: include/GraphicsWindow.h \
 		include/Elevator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
 		include/Controller.h \
 		include/BuildingPanel.h \
 		include/GraphicsGenerator.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPainter \
-		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
 		moc_predefs.h \
 		/home/nickshiell/anaconda3/bin/moc
 	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/GraphicsWindow.h -o moc_GraphicsWindow.cpp
@@ -1214,6 +1224,16 @@ moc_BuildingSimulator.cpp: include/BuildingSimulator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
 		include/Controller.h \
 		include/BuildingPanel.h \
 		include/BuildingSimulator.h \
@@ -1452,6 +1472,16 @@ moc_Controller.cpp: include/Controller.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
 		include/BuildingPanel.h \
 		include/BuildingSimulator.h \
 		include/Controller.h \
@@ -1585,6 +1615,15 @@ moc_GraphicsGenerator.cpp: include/GraphicsGenerator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		include/ElevatorState.h \
 		include/Controller.h \
 		include/BuildingPanel.h \
 		moc_predefs.h \
@@ -1762,6 +1801,7 @@ moc_Elevator.cpp: include/Elevator.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainerfwd.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/qobject_impl.h \
 		include/Utility.h \
+		include/Person.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qwidget.h \
@@ -1820,6 +1860,17 @@ moc_Elevator.cpp: include/Elevator.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/qicon.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
+		include/Elevator.h \
 		moc_predefs.h \
 		/home/nickshiell/anaconda3/bin/moc
 	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/Elevator.h -o moc_Elevator.cpp
@@ -2052,6 +2103,15 @@ moc_ElevatorPanel.cpp: include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
 		include/Utility.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
 		moc_predefs.h \
 		/home/nickshiell/anaconda3/bin/moc
 	/home/nickshiell/anaconda3/bin/moc $(DEFINES) --include /home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim/moc_predefs.h -I/home/nickshiell/anaconda3/mkspecs/linux-g++ -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/Dropbox/Code/sandbox/QTSandbox/ElevatorSim -I/home/nickshiell/anaconda3/include/qt -I/home/nickshiell/anaconda3/include/qt/QtWidgets -I/home/nickshiell/anaconda3/include/qt/QtGui -I/home/nickshiell/anaconda3/include/qt/QtCore -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -I/usr/include/c++/11/backward -I/usr/lib/gcc/x86_64-linux-gnu/11/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include include/ElevatorPanel.h -o moc_ElevatorPanel.cpp
@@ -2455,11 +2515,17 @@ main.o: main.cpp /home/nickshiell/anaconda3/include/qt/QtWidgets/QApplication \
 		include/Elevator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
 		include/Controller.h \
 		include/BuildingPanel.h \
 		include/GraphicsGenerator.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPainter \
-		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
 		include/MyController.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
@@ -2611,11 +2677,17 @@ GraphicsWindow.o: src/GraphicsWindow.cpp include/GraphicsWindow.h \
 		include/Elevator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
 		include/Controller.h \
 		include/BuildingPanel.h \
 		include/GraphicsGenerator.h \
-		/home/nickshiell/anaconda3/include/qt/QtGui/QPainter \
-		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPainter
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GraphicsWindow.o src/GraphicsWindow.cpp
 
 BuildingPanel.o: src/BuildingPanel.cpp include/BuildingPanel.h \
@@ -2852,6 +2924,16 @@ BuildingSimulator.o: src/BuildingSimulator.cpp include/BuildingSimulator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
 		include/Controller.h \
 		include/BuildingPanel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o BuildingSimulator.o src/BuildingSimulator.cpp
@@ -3095,6 +3177,16 @@ Controller.o: src/Controller.cpp include/Controller.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
 		include/BuildingPanel.h \
 		include/BuildingSimulator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Controller.o src/Controller.cpp
@@ -3217,6 +3309,16 @@ MyController.o: src/MyController.cpp include/MyController.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h \
 		include/BuildingPanel.h \
 		include/BuildingSimulator.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o MyController.o src/MyController.cpp
@@ -3347,6 +3449,15 @@ GraphicsGenerator.o: src/GraphicsGenerator.cpp include/GraphicsGenerator.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		include/ElevatorState.h \
 		include/Controller.h \
 		include/BuildingPanel.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o GraphicsGenerator.o src/GraphicsGenerator.cpp
@@ -3520,6 +3631,7 @@ Elevator.o: src/Elevator.cpp include/Elevator.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainerfwd.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/qobject_impl.h \
 		include/Utility.h \
+		include/Person.h \
 		include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qwidget.h \
@@ -3577,7 +3689,17 @@ Elevator.o: src/Elevator.cpp include/Elevator.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/qicon.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
-		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/ElevatorState.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Elevator.o src/Elevator.cpp
 
 ElevatorPanel.o: src/ElevatorPanel.cpp include/ElevatorPanel.h \
@@ -3692,7 +3814,6 @@ ElevatorPanel.o: src/ElevatorPanel.cpp include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
 		include/Utility.h \
-		include/FloorButton.h \
 		include/AnimatedImage.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
@@ -3702,12 +3823,139 @@ ElevatorPanel.o: src/ElevatorPanel.cpp include/ElevatorPanel.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
+		include/FloorButton.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/QGridLayout \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qgridlayout.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlayout.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlayoutitem.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qboxlayout.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ElevatorPanel.o src/ElevatorPanel.cpp
+
+ElevatorState.o: src/ElevatorState.cpp include/ElevatorState.h \
+		include/Utility.h \
+		include/Elevator.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobject.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qnamespace.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qconfig-bootstrapped.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qconfig.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtcore-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsystemdetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qprocessordetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcompilerdetection.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtypeinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsysinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlogging.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qflags.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasicatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_bootstrap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qgenericatomic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_cxx11.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qatomic_msvc.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qglobalstatic.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmutex.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qnumeric.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qversiontagging.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobjectdefs_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstring.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qchar.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbytearray.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qrefcount.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qarraydata.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringliteral.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringalgorithms.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringview.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringbuilder.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qalgorithms.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qiterator.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qhashfunctions.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qpair.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvector.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainertools_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qpoint.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbytearraylist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringlist.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qregexp.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qstringmatcher.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcoreevent.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qscopedpointer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmetatype.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvarlengtharray.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontainerfwd.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qobject_impl.h \
+		include/Person.h \
+		include/ElevatorPanel.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QWidget \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qwidget.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgetsglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtguiglobal.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtgui-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qtwidgets-config.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qwindowdefs.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qwindowdefs_win.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmargins.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpaintdevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qrect.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsize.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpalette.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qcolor.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qrgb.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qrgba64.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qbrush.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qmatrix.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpolygon.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qregion.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qdatastream.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qiodevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qline.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtransform.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qimage.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpixelformat.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qpixmap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsharedpointer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qshareddata.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qhash.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qsharedpointer_impl.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfont.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfontmetrics.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qfontinfo.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qsizepolicy.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qcursor.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qkeysequence.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qevent.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qvariant.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qmap.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qdebug.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtextstream.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qlocale.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qset.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qcontiguouscache.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qurl.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qurlquery.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qfile.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qfiledevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qvector2d.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qtouchdevice.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QPushButton \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qpushbutton.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qabstractbutton.h \
+		/home/nickshiell/anaconda3/include/qt/QtGui/qicon.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QFrame \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
+		include/AnimatedImage.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QString \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QTimer \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qtimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/qbasictimer.h \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/QLabel \
+		/home/nickshiell/anaconda3/include/qt/QtWidgets/qlabel.h \
+		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
+		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ElevatorState.o src/ElevatorState.cpp
 
 Person.o: src/Person.cpp include/Person.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QObject \
@@ -3878,13 +4126,6 @@ AnimatedImage.o: src/AnimatedImage.cpp include/AnimatedImage.h \
 		/home/nickshiell/anaconda3/include/qt/QtWidgets/qframe.h \
 		/home/nickshiell/anaconda3/include/qt/QtCore/QList \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QPixmap \
-		/home/nickshiell/anaconda3/include/qt/QtWidgets/QApplication \
-		/home/nickshiell/anaconda3/include/qt/QtWidgets/qapplication.h \
-		/home/nickshiell/anaconda3/include/qt/QtCore/qcoreapplication.h \
-		/home/nickshiell/anaconda3/include/qt/QtCore/qeventloop.h \
-		/home/nickshiell/anaconda3/include/qt/QtWidgets/qdesktopwidget.h \
-		/home/nickshiell/anaconda3/include/qt/QtGui/qguiapplication.h \
-		/home/nickshiell/anaconda3/include/qt/QtGui/qinputmethod.h \
 		/home/nickshiell/anaconda3/include/qt/QtGui/QImage
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o AnimatedImage.o src/AnimatedImage.cpp
 

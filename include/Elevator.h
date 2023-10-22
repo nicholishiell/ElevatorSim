@@ -7,10 +7,11 @@
 #include <vector>
 
 #include "include/Utility.h"
-#include "include/ElevatorPanel.h"
 #include "include/Person.h"
+#include "include/ElevatorPanel.h"
+#include "include/ElevatorState.h"
 
-class Elevator : public QObject
+class Elevator : public QObject, public std::enable_shared_from_this<Elevator>
 {
     Q_OBJECT
 
@@ -18,12 +19,13 @@ public:
     Elevator(const std::string label, DoorState doorState, int level, int numFloors); 
     virtual ~Elevator();   
 
-    // Getters and Setters
     int GetLevel() const {return currentLevel_;}
     
     float GetHeight() const {return height_;}
-    
-    ElevatorState GetState() const {return elevatorState_;}
+    float SetHeight(const float height){height_ = height;}
+    void UpdateHeight(const float deltaH);
+
+    std::string GetStateString() const;
 
     DoorState GetDoorState() const {return doorState_;}
 
@@ -32,10 +34,17 @@ public:
     void SetNumberOfFloors(const int numFloors) {numberOfFloors_ = numFloors;}
 
     ServiceRequest GetCurrentlyServicing() const {return currentlyServicing_;}
+    void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
 
     ElevatorPanelSharedPtr GetPanel() const {return panel_;}
 
     std::string StateString() const;
+
+    void OpenDoor();
+
+    void CloseDoor();
+
+    bool IsRouteEmpty() const {return route_.empty();}
 
     // Functions used to add routes to the elevator  
     void AddToRoute(const ServiceRequest& request);
@@ -43,23 +52,15 @@ public:
     // Updates the state and position of the elevator
     void Update(const float timeStep);
 
-private:
+    void UpdateCurrentLevel();
+
+    ServiceRequest PopRoute();
+
+ private:
 
     bool checkOverloaded();
 
     bool checkDoorObstructed();
-
-    void up(const float timeStep);
-    void down(const float timeStep);
-    void arrived(const float timeStep);
-    void idle(const float timeStep);
-    void waiting(const float timeStep);
-    void stopped(const float timeStep);
-    void leaving(const float timeStep);
-
-    void updateCurrentLevel();
-
-    ServiceRequest popRoute();
 
     DoorState doorState_;
     int currentLevel_;
@@ -67,9 +68,7 @@ private:
     int numberOfFloors_;
 
     float height_;
-    float speed_;
 
-    float maxWeight_;
     bool doorObstructed_;
 
     std::string label_;
@@ -79,7 +78,7 @@ private:
     std::vector<ServiceRequest> route_;
     ServiceRequest currentlyServicing_;
 
-    ElevatorState elevatorState_;
+    ElevatorStateUniquePtr elevatorState_;
 
     ElevatorPanelSharedPtr panel_;
 
