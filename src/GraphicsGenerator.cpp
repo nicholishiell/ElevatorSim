@@ -1,8 +1,10 @@
 #include "include/GraphicsGenerator.h"
+#include "include/BuildingSimulator.h"
 
-GraphicsGenerator::GraphicsGenerator(const BuildingSimulator * buildingSim)
+GraphicsGenerator::GraphicsGenerator(BuildingSimulator * buildingSim)
 {
     buildingSim_ = buildingSim;
+    buildingSim_->SetGraphicsGenerator(this);
 }
 
 GraphicsGenerator::~GraphicsGenerator()

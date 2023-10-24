@@ -9,15 +9,16 @@
 #include <iostream>
 #include <string>
 
-#include "include/BuildingSimulator.h"
 #include "include/Utility.h"
+
+class BuildingSimulator;
 
 class GraphicsGenerator : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 
 public:
-    GraphicsGenerator(const BuildingSimulator* buildingSim); 
+    GraphicsGenerator(BuildingSimulator* buildingSim); 
             
     virtual ~GraphicsGenerator();   
 
@@ -28,11 +29,12 @@ public:
                 QWidget *widget) override;
 
 protected:
+
     void advance(int step) override;
 
 private:
 
-    const BuildingSimulator* buildingSim_;
+    BuildingSimulator* buildingSim_;
 
     QPixmap drawFloor(const FloorSharedPtr floor);
     QPixmap drawElevatorOnFloor(const ElevatorSharedPtr elevator, 

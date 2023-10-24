@@ -60,9 +60,6 @@ void
 GraphicsWindow::UpdateSimulationOneStep()
 {
     buildingSimulator_->Step(timeStepSeconds);
-    
-    // TODO: The graphicsGenerator should be an observer of the buildingSimulator so it updates automatically when the sim updates
-    graphicsGenerator_->update();
 }
 
 void 

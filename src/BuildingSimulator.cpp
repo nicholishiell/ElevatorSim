@@ -1,5 +1,6 @@
 #include "include/BuildingSimulator.h"
 
+#include "include/GraphicsGenerator.h"
 
 BuildingSimulator::BuildingSimulator(ControllerSharedPtr controller)
 {
@@ -9,6 +10,8 @@ BuildingSimulator::BuildingSimulator(ControllerSharedPtr controller)
     QObject::connect(buildingPanel_.get(),&BuildingPanel::PowerOutageAlarm,this,&BuildingSimulator::HandlePowerOutageAlarm);
 
     controller_ = controller;
+
+    graphicsObserver_ = nullptr;
 }
 
 BuildingSimulator::~BuildingSimulator()
@@ -84,10 +87,15 @@ BuildingSimulator::HandlePowerOutageAlarm()
 void
 BuildingSimulator::Step(const float timeStep)
 {
+    // Do the mandatory updates (moving the elevators and people)
     this->mandatoryStep(timeStep);
 
     // Let the user defined controller do any periodic work it needs to do
     controller_->Step(timeStep, elevators_, floors_);
+
+    // Notify the graphics generator that things have changed.
+    if(graphicsObserver_ != nullptr)
+        graphicsObserver_->update();
 }
 
 void 

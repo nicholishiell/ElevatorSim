@@ -10,12 +10,17 @@
 #include <cmath>
 
 #include "include/Utility.h"
+
 #include "include/Floor.h"
 #include "include/Elevator.h"
+
 #include "include/Controller.h"
+
 #include "include/FloorPanel.h"
 #include "include/ElevatorPanel.h"
 #include "include/BuildingPanel.h"
+
+class GraphicsGenerator;
 
 class BuildingSimulator : public QObject
 {
@@ -36,6 +41,8 @@ public:
 
     void Step(const float timeStep);
 
+    void SetGraphicsGenerator(GraphicsGenerator* gg){graphicsObserver_ = gg;}
+
 public slots:
 
     void HandleServiceRequest(const ServiceRequest request);
@@ -55,6 +62,8 @@ private:
     BuildingPanelSharedPtr buildingPanel_;
 
     ControllerSharedPtr controller_;
+
+    GraphicsGenerator* graphicsObserver_;
 };
 
 #endif
