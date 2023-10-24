@@ -22,7 +22,7 @@ public:
     int GetLevel() const {return currentLevel_;}
     
     float GetHeight() const {return height_;}
-    float SetHeight(const float height){height_ = height;}
+    void SetHeight(const float height){height_ = height;}
     void UpdateHeight(const float deltaH);
 
     std::string GetStateString() const;
@@ -58,10 +58,14 @@ public:
 
  private:
 
+    // Private methods
+    void handlePendingRequests();
+
     bool checkOverloaded();
 
     bool checkDoorObstructed();
 
+    // Private members
     DoorState doorState_;
     int currentLevel_;
 
@@ -73,12 +77,10 @@ public:
 
     std::string label_;
 
-    float timeSpentWaiting_ = 0.;
-
     std::vector<ServiceRequest> route_;
     ServiceRequest currentlyServicing_;
 
-    ElevatorStateUniquePtr elevatorState_;
+    ElevatorState* elevatorState_;
 
     ElevatorPanelSharedPtr panel_;
 

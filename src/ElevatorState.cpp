@@ -3,26 +3,27 @@
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ElevatorStateUniquePtr
+ElevatorState*
 ElevatorStateIdle::Update(  ElevatorSharedPtr elevator, 
                             const float timeStep)
 {
+    elevator->CloseDoor();
+
     if(!elevator->IsRouteEmpty())
     {
-        return std::make_unique<ElevatorStateLeaving>();
+        return new ElevatorStateLeaving();
     }
     else
     {
-        elevator->UpdateCurrentLevel();
-        //elevator->AddToRoute(ServiceRequest(elevator->GetLevel(), RequestDirection::REQ_IDLE));
-        return std::make_unique<ElevatorStateIdle>();
+        elevator->SetCurrentlyServicing(ServiceRequest(elevator->GetLevel(), RequestDirection::REQ_IDLE));
+        return nullptr;
     }
 
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ElevatorStateUniquePtr
+ElevatorState*
 ElevatorStateLeaving::Update(   ElevatorSharedPtr elevator, 
                                 const float timeStep)
 {
@@ -31,21 +32,23 @@ ElevatorStateLeaving::Update(   ElevatorSharedPtr elevator,
     // TODO: to make sure the door is closed and we are not overloaded, or there is a fire
     elevator->CloseDoor();
 
-    // Get the next route off the route vector
+    // // Get the next route off the route vector
     elevator->SetCurrentlyServicing(elevator->PopRoute());
 
     // Determine which direction to head
     if(elevator->GetCurrentlyServicing().level > elevator->GetLevel())
-        return std::make_unique<ElevatorStateUp>();
+        return  new ElevatorStateUp();
     else if(elevator->GetCurrentlyServicing().level < elevator->GetLevel())
-        return std::make_unique<ElevatorStateDown>();
+        return new ElevatorStateDown();
     else
-        return std::make_unique<ElevatorStateIdle>();
+        return new ElevatorStateIdle();
+
+    return nullptr;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ElevatorStateUniquePtr
+ElevatorState*
 ElevatorStateUp::Update(ElevatorSharedPtr elevator, 
                         const float timeStep)
 {
@@ -55,17 +58,17 @@ ElevatorStateUp::Update(ElevatorSharedPtr elevator,
 
     if(elevator->GetLevel() == elevator->GetCurrentlyServicing().level)
     {
-        return std::make_unique<ElevatorStateArrived>();
+        return new ElevatorStateArrived();
     }
     else
     {
-        return std::make_unique<ElevatorStateUp>(this);
+        return nullptr;
     }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ElevatorStateUniquePtr
+ElevatorState*
 ElevatorStateDown::Update(  ElevatorSharedPtr elevator, 
                             const float timeStep)
 {
@@ -74,23 +77,23 @@ ElevatorStateDown::Update(  ElevatorSharedPtr elevator,
     if(elevator->GetHeight() + delta > 0.)
     {
         elevator->UpdateHeight(delta);
-
     }
     else
     {
         elevator->SetHeight(0.);
     }
 
-
     if(elevator->GetLevel() == elevator->GetCurrentlyServicing().level)
     {
-        return std::make_unique<ElevatorStateArrived>();
+        return new ElevatorStateArrived();
     }
+
+    return nullptr;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ElevatorStateUniquePtr
+ElevatorState*
 ElevatorStateArrived::Update(   ElevatorSharedPtr elevator, 
                                 const float timeStep)
 {
@@ -100,29 +103,29 @@ ElevatorStateArrived::Update(   ElevatorSharedPtr elevator,
     elevator->OpenDoor();
     
     // Change state to waiting
-    return std::make_unique<ElevatorStateWaiting>();
+    return  new ElevatorStateWaiting();
 }
 
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ElevatorStateUniquePtr
+ElevatorState*
 ElevatorStateWaiting::Update(   ElevatorSharedPtr elevator, 
                                 const float timeStep)
 {
     timeSpentWaiting_ = timeSpentWaiting_ + timeStep;
     
     if(timeSpentWaiting_ > ELEVATOR_WAIT_TIME)
-        return std::make_unique<ElevatorStateIdle>();
-    
-
+        return  new ElevatorStateIdle();
+    else
+        return nullptr;  
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ElevatorStateUniquePtr
+ElevatorState*
 ElevatorStateDisabled::Update(  ElevatorSharedPtr elevator, 
                                 const float timeStep)
 {
-    return std::make_unique<ElevatorStateDisabled>();
+    return nullptr;
 }

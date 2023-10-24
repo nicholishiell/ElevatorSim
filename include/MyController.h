@@ -41,8 +41,7 @@ private:
 
     ServiceRequestVector pendingRequests_;
 
-    void assignServiceRequests( ElevatorSharedPtrVector elevators,
-                                FloorSharedPtrVector floors);
+    void assignServiceRequests( ElevatorSharedPtrVector elevators);
 };
 
 #endif

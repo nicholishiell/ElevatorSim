@@ -19,7 +19,7 @@ Elevator::Elevator( const std::string label, DoorState doorState, int level, int
     currentLevel_ = level;
     label_ = label;
 
-    elevatorState_ = std::make_unique<ElevatorStateIdle>();
+    elevatorState_ =  new ElevatorStateIdle();
     
     height_ = level*FLOOR_HEIGHT_METERS;
 
@@ -76,14 +76,39 @@ Elevator::AddToRoute(const ServiceRequest& request)
 void 
 Elevator::Update(const float timeStep)
 {
+    // Display info to the console
     std::cout << label_ << "\t" << currentLevel_ << "\t" << height_ << "\t" << elevatorState_->GetStateString() << std::endl;
     std::cout << "CUR REQ: " << GetCurrentlyServicing().level << "\t" << GetCurrentlyServicing().direction << std::endl;
     std::cout << "Route: ";
     for(auto r : route_)
         std::cout << "(" << r.level << ", " << r.direction << ") ";
     std::cout << std::endl;
+
+    // Handle any of the jobs that were entered between update cycles    
+    handlePendingRequests();
+
+    // Update the state
+    std::cout << "Update state:" << std::endl;
+    ElevatorState* nextState = elevatorState_->Update(shared_from_this(), timeStep); 
+
+    if(nextState != nullptr)
+    {
+        delete(elevatorState_);
+        elevatorState_ = nextState;
+        std::cout << "State changed: " << nextState->GetStateString() << std::endl;
+    }
+    else
+        std::cout << "Same state" << std::endl;
     
-    // TODO: Move request handling to it's open function
+    // finally update the currently level of the elevator
+    this->UpdateCurrentLevel();
+
+    std::cout << "DONE!" << std::endl;
+}
+
+void 
+Elevator::handlePendingRequests()
+{
     auto requests = panel_->PopRequests();
     for(auto r : requests)
     {
@@ -105,16 +130,18 @@ Elevator::Update(const float timeStep)
             AddToRoute(r);
         }
     }
-
-    elevatorState_ = elevatorState_->Update(shared_from_this(), timeStep); 
-    
-    UpdateCurrentLevel();
 }
+
 
 void 
 Elevator::UpdateCurrentLevel()
 {
-    currentLevel_ = std::round(height_/FLOOR_HEIGHT);
+    for(int i = 0; i < numberOfFloors_; i++)
+    {
+        if( std::fabs(height_ - i*FLOOR_HEIGHT_METERS) < 0.01 )
+            currentLevel_ = i; 
+    }
+    
     panel_->DisplayMessage(int_to_string(currentLevel_));
 }
 
@@ -133,9 +160,14 @@ Elevator::GetStateString() const
 ServiceRequest 
 Elevator::PopRoute()
 {      
-    auto nextRequest = route_[0];
-    route_.front() = std::move(route_.back());
-    route_.pop_back();
+    ServiceRequest nextRequest(currentLevel_, REQ_IDLE);
+
+    if(route_.size() > 0)
+    {
+        nextRequest = route_[0];
+        route_.front() = std::move(route_.back());
+        route_.pop_back();
+    }
 
     return nextRequest;
 }

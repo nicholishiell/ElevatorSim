@@ -17,7 +17,15 @@ MyController::HandleFireAlarm(  const int level,
                                 ElevatorSharedPtrVector elevators,
                                 FloorSharedPtrVector floors)
 {
-    std::cout << "handleFireAlarm" << std::endl;
+    std::cout << "handleFireAlarm on level "<< level << std::endl;
+
+    for(auto floor : floors)
+    {
+    }
+
+    for(auto elevator : elevators)
+    {
+    }
 }
 
 void 
@@ -25,6 +33,13 @@ MyController::HandlePowerOutageAlarm(   ElevatorSharedPtrVector elevators,
                                         FloorSharedPtrVector floors)
 {
     std::cout << "handlePowerOutageAlarm" << std::endl;
+        for(auto floor : floors)
+    {
+    }
+
+    for(auto elevator : elevators)
+    {
+    }
 }
 
 void 
@@ -34,6 +49,14 @@ MyController::HandleServiceRequest( const ServiceRequest request,
 {
     std::cout << "handleServiceRequest" << std::endl;
     pendingRequests_.emplace_back(request);
+
+    for(auto floor : floors)
+    {
+    }
+
+    for(auto elevator : elevators)
+    {
+    }
 }
 
 void 
@@ -41,12 +64,18 @@ MyController::Step( const float timeStep,
                     ElevatorSharedPtrVector elevators,
                     FloorSharedPtrVector floors)
 {
-    this->assignServiceRequests(elevators, floors);
+    this->assignServiceRequests(elevators);
+    
+    if(timeStep < 0)
+        std::cout << "Invalid time step" << std::endl;
+
+    for(auto floor : floors)
+    {
+    }
 }
 
 void 
-MyController::assignServiceRequests(ElevatorSharedPtrVector elevators,
-                                    FloorSharedPtrVector floors)
+MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
 {   
     std::cout << "PendingJobs: " << std::endl;
     for(auto r : pendingRequests_)

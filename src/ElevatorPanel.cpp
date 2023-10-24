@@ -106,7 +106,6 @@ ElevatorPanel::PopRequests()
     requests_.erase(requests_.begin(),requests_.end());
 
     return temp;
-
 }
 
 void 

@@ -41,6 +41,7 @@ GraphicsGenerator::paint(   QPainter *painter,
 
         for(u_int iElevator = 0; iElevator  < buildingSim_->GetNumberOfElevators(); iElevator++)
         {
+            // TODO: Seg fault starts here
             floorImage = drawElevatorOnFloor(   buildingSim_->GetElevator(iElevator),
                                                 floorImage,
                                                 iFloor,
@@ -124,14 +125,13 @@ GraphicsGenerator::drawFloor(const FloorSharedPtr floor)
 }
 
 QPixmap 
-GraphicsGenerator::drawElevatorOnFloor(   const ElevatorSharedPtr elevator, 
-                                            QPixmap floorImage, 
-                                            const int floorIndex, 
-                                            const int elevatorIndex)
-{
-
+GraphicsGenerator::drawElevatorOnFloor( const ElevatorSharedPtr elevator, 
+                                        QPixmap floorImage, 
+                                        const int floorIndex, 
+                                        const int elevatorIndex)
+{   
     QPixmap elevatorImage;
-    
+
     if(elevator->GetLevel() == floorIndex && elevator->GetDoorState() == DoorState::OPEN)
     {
         elevatorImage = QPixmap("./images/elevator/ElevatorOpen.png");
@@ -143,13 +143,12 @@ GraphicsGenerator::drawElevatorOnFloor(   const ElevatorSharedPtr elevator,
 
     auto x = 612+elevatorIndex*ELEVATOR_SPACING;
     auto y = 87;
-
     QPainter painter(&floorImage);
     painter.drawPixmap( x,
-                        y,
-                        ELEVATOR_WIDTH,
-                        ELEVATOR_HEIGHT,
-                        elevatorImage);
+                    y,
+                    ELEVATOR_WIDTH,
+                    ELEVATOR_HEIGHT,
+                    elevatorImage);
 
     return floorImage;
 }

@@ -113,7 +113,7 @@ BuildingSimulator::updateFloors()
     for(auto floor : floors_)
         floor->GetPanel()->LightsOut();
 
-    for(int i = 0; i < elevators_.size(); i++)
+    for(unsigned int i = 0; i < elevators_.size(); i++)
     {
         auto elevator = elevators_[i];
         auto level = elevator->GetLevel();

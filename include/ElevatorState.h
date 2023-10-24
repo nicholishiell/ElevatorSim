@@ -17,7 +17,7 @@ public:
 
     std::string GetStateString() const {return stateString_;}
 
-    virtual ElevatorStateUniquePtr Update(  ElevatorSharedPtr elevator, 
+    virtual ElevatorState* Update(  ElevatorSharedPtr elevator, 
                                             const float timeStep) = 0;
 protected:
 
@@ -32,7 +32,7 @@ class ElevatorStateUp: public ElevatorState
 public:
     ElevatorStateUp() : ElevatorState("UP"){}
     
-    ElevatorStateUniquePtr Update(   ElevatorSharedPtr elevator, 
+    ElevatorState* Update(   ElevatorSharedPtr elevator, 
                                     const float timeStep);
 
 private:
@@ -46,7 +46,7 @@ class ElevatorStateDown: public ElevatorState
 public:
     ElevatorStateDown() : ElevatorState("DOWN"){}
 
-    ElevatorStateUniquePtr Update(  ElevatorSharedPtr elevator, 
+    ElevatorState* Update(  ElevatorSharedPtr elevator, 
                                     const float timeStep);
 
 private:
@@ -60,7 +60,7 @@ class ElevatorStateArrived: public ElevatorState
 public:
     ElevatorStateArrived() : ElevatorState("ARRIVED"){}
 
-    ElevatorStateUniquePtr Update(  ElevatorSharedPtr elevator, 
+    ElevatorState* Update(  ElevatorSharedPtr elevator, 
                                     const float timeStep);
     
 };
@@ -74,7 +74,7 @@ public:
 
     ElevatorStateWaiting() : ElevatorState("WAITING"){}
     
-    ElevatorStateUniquePtr Update(  ElevatorSharedPtr elevator, 
+    ElevatorState* Update(  ElevatorSharedPtr elevator, 
                                     const float timeStep);
 
 private:
@@ -90,7 +90,7 @@ class ElevatorStateIdle: public ElevatorState
 public:
     ElevatorStateIdle() : ElevatorState("IDLE"){}
     
-    ElevatorStateUniquePtr Update(  ElevatorSharedPtr elevator, 
+    ElevatorState* Update(  ElevatorSharedPtr elevator, 
                                     const float timeStep);
 };
 
@@ -101,7 +101,7 @@ class ElevatorStateLeaving: public ElevatorState
 public:
     ElevatorStateLeaving() : ElevatorState("LEAVING"){}
     
-    ElevatorStateUniquePtr Update(  ElevatorSharedPtr elevator, 
+    ElevatorState* Update(  ElevatorSharedPtr elevator, 
                                     const float timeStep);
     
 };
@@ -113,7 +113,7 @@ class ElevatorStateDisabled: public ElevatorState
 public:
     ElevatorStateDisabled() : ElevatorState("DISABLED"){}
     
-    ElevatorStateUniquePtr Update(  ElevatorSharedPtr elevator, 
+    ElevatorState* Update(  ElevatorSharedPtr elevator, 
                                     const float timeStep); 
 };
 
