@@ -76,13 +76,8 @@ Elevator::AddToRoute(const ServiceRequest& request)
 void 
 Elevator::Update(const float timeStep)
 {
-    // Display info to the console
-    std::cout << label_ << "\t" << currentLevel_ << "\t" << height_ << "\t" << elevatorState_->GetStateString() << std::endl;
-    std::cout << "CUR REQ: " << GetCurrentlyServicing().level << "\t" << GetCurrentlyServicing().direction << std::endl;
-    std::cout << "Route: ";
-    for(auto r : route_)
-        std::cout << "(" << r.level << ", " << r.direction << ") ";
-    std::cout << std::endl;
+    // Display data to console
+    ToConsole();
 
     // Handle any of the jobs that were entered between update cycles    
     handlePendingRequests();
@@ -132,6 +127,17 @@ Elevator::handlePendingRequests()
     }
 }
 
+void 
+Elevator::ToConsole() const
+{
+    // Display info to the console
+    std::cout << label_ << "\t" << currentLevel_ << "\t" << height_ << "\t" << elevatorState_->GetStateString() << std::endl;
+    std::cout << "CUR REQ: " << GetCurrentlyServicing().level << "\t" << GetCurrentlyServicing().direction << std::endl;
+    std::cout << "Route: ";
+    for(auto r : route_)
+        std::cout << "(" << r.level << ", " << r.direction << ") ";
+    std::cout << std::endl;
+}
 
 void 
 Elevator::UpdateCurrentLevel()

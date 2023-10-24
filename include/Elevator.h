@@ -56,6 +56,8 @@ public:
 
     ServiceRequest PopRoute();
 
+    void ToConsole() const;
+
  private:
 
     // Private methods
@@ -85,7 +87,6 @@ public:
     ElevatorPanelSharedPtr panel_;
 
     PersonVector passengers_;
-
 };
 
 
