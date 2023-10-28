@@ -30,8 +30,15 @@ public:
     BuildingSimulator(ControllerSharedPtr controller); 
     virtual ~BuildingSimulator();   
 
+    // These functions are used to "construct" the building 
     void AddFloor(std::string label);
     void AddElevator(std::string label, int floor, DoorState state);
+
+    // Run the simulation for a single time step
+    void Update(const float timeStep);
+
+    // All the methods under here are used by generate the graphics
+    void SetGraphicsGenerator(GraphicsGenerator* gg){graphicsObserver_ = gg;}
 
     int GetNumberOfFloors() const {return static_cast<int>(floors_.size());}
     int GetNumberOfElevators() const {return static_cast<int>(elevators_.size());}
@@ -39,21 +46,18 @@ public:
     ElevatorSharedPtr GetElevator(const int i) const {return elevators_[i];}
     FloorSharedPtr GetFloor(const int i) const {return floors_[i];}
 
-    void Step(const float timeStep);
-
-    void SetGraphicsGenerator(GraphicsGenerator* gg){graphicsObserver_ = gg;}
-
 public slots:
 
+    // These functions are supplied by the controller passed in (strategy pattern)
     void HandleServiceRequest(const ServiceRequest request);
     void HandleFireAlarm(const int level);
     void HandlePowerOutageAlarm();
 
 private:
-
-    void mandatoryStep(const float timeStep);
-    
-    void updateFloors();
+   
+    void updateFloors(const float timeStep);
+    void updateElevators(const float timeStep);
+    void updatePeople(const float timeStep);
 
     // Private Members
     ElevatorSharedPtrVector elevators_;

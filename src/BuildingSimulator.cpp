@@ -85,10 +85,13 @@ BuildingSimulator::HandlePowerOutageAlarm()
 
 //
 void
-BuildingSimulator::Step(const float timeStep)
+BuildingSimulator::Update(const float timeStep)
 {
-    // Do the mandatory updates (moving the elevators and people)
-    this->mandatoryStep(timeStep);
+    this->updateElevators(timeStep);
+
+    this->updateFloors(timeStep);
+
+    this->updatePeople(timeStep);
 
     // Let the user defined controller do any periodic work it needs to do
     controller_->Step(timeStep, elevators_, floors_);
@@ -99,7 +102,7 @@ BuildingSimulator::Step(const float timeStep)
 }
 
 void 
-BuildingSimulator::mandatoryStep(const float timeStep)
+BuildingSimulator::updateElevators(const float timeStep)
 {
     // Move the elevators
     for(auto elevator : elevators_)
@@ -107,16 +110,10 @@ BuildingSimulator::mandatoryStep(const float timeStep)
         std::cout << "updating: " << elevator->GetLabel() << std::endl;
         elevator->Update(timeStep);
     }
-
-    // Update the floors
-    this->updateFloors();
-
-    // TODO: Next update the people in the building
-    // this->updatePeople()
 }
 
 void 
-BuildingSimulator::updateFloors()
+BuildingSimulator::updateFloors(const float timeStep)
 {
     for(auto floor : floors_)
         floor->GetPanel()->LightsOut();
@@ -144,4 +141,10 @@ BuildingSimulator::updateFloors()
 
         }
     }
+}
+
+void 
+BuildingSimulator::updatePeople(const float timeStep)
+{
+
 }

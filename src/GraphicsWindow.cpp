@@ -59,7 +59,7 @@ GraphicsWindow::~GraphicsWindow()
 void 
 GraphicsWindow::UpdateSimulationOneStep()
 {
-    buildingSimulator_->Step(timeStepSeconds);
+    buildingSimulator_->Update(timeStepSeconds);
 }
 
 void 

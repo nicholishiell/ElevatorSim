@@ -83,22 +83,16 @@ Elevator::Update(const float timeStep)
     handlePendingRequests();
 
     // Update the state
-    std::cout << "Update state:" << std::endl;
     ElevatorState* nextState = elevatorState_->Update(shared_from_this(), timeStep); 
 
     if(nextState != nullptr)
     {
         delete(elevatorState_);
         elevatorState_ = nextState;
-        std::cout << "State changed: " << nextState->GetStateString() << std::endl;
     }
-    else
-        std::cout << "Same state" << std::endl;
     
     // finally update the currently level of the elevator
     this->UpdateCurrentLevel();
-
-    std::cout << "DONE!" << std::endl;
 }
 
 void 
