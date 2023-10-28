@@ -19,8 +19,10 @@ public:
             
     virtual ~Floor(); 
 
+    void SetPanel(FloorPanelSharedPtr panel){panel_ = panel;}
+
     int GetLevel() const {return level_;}
-    void SetNumElevators(const int numElevators);
+    std::string GetLabel() const {return label_;}
 
     void UpRequestServiced();
     void DownRequestServiced();
@@ -33,6 +35,8 @@ private:
     std::string label_;
 
     FloorPanelSharedPtr panel_;
+
+    PersonVector peopleOnFloor_;
 };
 
 #endif

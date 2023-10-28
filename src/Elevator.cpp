@@ -13,18 +13,19 @@ int_to_string(const int i)
 }
 
 
-Elevator::Elevator( const std::string label, DoorState doorState, int level, int numFloors)
+Elevator::Elevator( const std::string label, 
+                    DoorState doorState, 
+                    const float height)
 {
     doorState_ = doorState;
-    currentLevel_ = level;
     label_ = label;
 
     elevatorState_ =  new ElevatorStateIdle();
     
-    height_ = level*FLOOR_HEIGHT_METERS;
-
-    numberOfFloors_ = numFloors;
-    panel_ = std::make_shared<ElevatorPanel>(label,numFloors);
+    height_ = height;
+    
+    panel_ = nullptr;
+    //panel_ = std::make_shared<ElevatorPanel>(label,numFloors);
 }
 
 Elevator::~Elevator()

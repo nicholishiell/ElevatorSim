@@ -12,9 +12,6 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
                                 QWidget *parent) : QWidget(parent)
 {
     // Create all the compulsory buttons
-    label_ = label;
-    numFloors_ = numFloors;
-
     auto gridLayout = new QGridLayout(this);
     auto fireButton = new QPushButton("FIRE", this);
     auto helpButton = new QPushButton("HELP", this);
@@ -88,7 +85,7 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
     }
        
     this->setLayout(gridLayout);
-    this->setWindowTitle(QString::fromStdString(label_));
+    this->setWindowTitle(QString::fromStdString(label));
 
     this->show();
 }

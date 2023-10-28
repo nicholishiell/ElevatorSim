@@ -14,7 +14,8 @@ class FloorPanel : public QWidget
     Q_OBJECT
 
 public:
-    FloorPanel( const std::string label, 
+    FloorPanel( const std::string label,
+                const int numElevators, 
                 const int level,
                 QWidget *parent = nullptr); 
 
@@ -24,9 +25,6 @@ public:
     
 
     bool GetUpRequested() const {return upRequested_;}
-   
-    int GetNumberOfElevators() const {return static_cast<int>(elevatorLights_.size());}
-    void SetNumberOfElevators(const int numElevators);
 
     LightState GetElevatorLightState(const int index);   
     void SetElevatorLight(const int elevatorIndex, LightState newState);
@@ -49,7 +47,6 @@ signals:
 private:
 
     int level_;
-    std::string label_;
 
     LightStateVector elevatorLights_;
 

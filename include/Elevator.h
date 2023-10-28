@@ -16,7 +16,7 @@ class Elevator : public QObject, public std::enable_shared_from_this<Elevator>
     Q_OBJECT
 
 public:
-    Elevator(const std::string label, DoorState doorState, int level, int numFloors); 
+    Elevator(const std::string label, DoorState doorState, const float height); 
     virtual ~Elevator();   
 
     int GetLevel() const {return currentLevel_;}
@@ -37,6 +37,7 @@ public:
     void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
 
     ElevatorPanelSharedPtr GetPanel() const {return panel_;}
+    void SetPanel(ElevatorPanelSharedPtr panel){panel_ = panel;}
 
     std::string StateString() const;
 
@@ -69,24 +70,25 @@ public:
 
     // Private members
     DoorState doorState_;
-    int currentLevel_;
-
-    int numberOfFloors_;
-
+  
     float height_;
 
     bool doorObstructed_;
 
     std::string label_;
 
-    std::vector<ServiceRequest> route_;
-    ServiceRequest currentlyServicing_;
-
     ElevatorState* elevatorState_;
 
-    ElevatorPanelSharedPtr panel_;
-
     PersonVector passengers_;
+
+    // all these should be stored in the panel
+    ElevatorPanelSharedPtr panel_;
+    std::vector<ServiceRequest> route_;
+    ServiceRequest currentlyServicing_;
+    int currentLevel_;
+
+    // this should be gotten rid off
+    int numberOfFloors_;    
 };
 
 

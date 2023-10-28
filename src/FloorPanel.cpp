@@ -5,13 +5,19 @@
 
 #include "include/FloorPanel.h"
 
-FloorPanel::FloorPanel( const std::string label, 
+FloorPanel::FloorPanel( const std::string label,
+                        const int numElevators, 
                         const int level,
                         QWidget *parent) : QWidget(parent)
 {
     level_ = level;
-    label_ = label;
 
+    for(int i = 0; i < numElevators; i++)
+    {
+        elevatorLights_.emplace_back(LightState::OFF);
+    }
+
+    // Setup GUI
     auto gridLayout = new QGridLayout(this);
     auto upButton = new QPushButton("UP", this);
     auto downButton = new QPushButton("DW", this);
@@ -23,23 +29,14 @@ FloorPanel::FloorPanel( const std::string label,
     QObject::connect(downButton, &QPushButton::clicked, this, &FloorPanel::DownButtonPresssed);
 
     this->setLayout(gridLayout);
-    this->setWindowTitle(QString::fromStdString(label_));
-
+    this->setWindowTitle(QString::fromStdString(label));
+  
     this->show();
 }
 
 FloorPanel::~FloorPanel()
 {
 
-}
-
-void 
-FloorPanel::SetNumberOfElevators(const int numElevators)
-{
-    for(int i = 0; i < numElevators; i++)
-    {
-        elevatorLights_.emplace_back(LightState::OFF);
-    }
 }
 
 LightState 

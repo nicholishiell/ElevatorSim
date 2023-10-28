@@ -20,6 +20,7 @@ public:
     ElevatorPanel(  const std::string label, 
                     const int numFloors,
                     QWidget *parent = nullptr); 
+                    
     virtual ~ElevatorPanel();   
 
     ServiceRequestVector PopRequests();
@@ -43,12 +44,15 @@ private slots:
 
     void FloorButtonPresssed();
 
+signals:
+
+    void EmergencyRequested(const EmergencyRequest& request);
+    
+    void ServiceRequested(const ServiceRequest& request);
+
 private:
 
     ServiceRequestVector requests_;
-
-    std::string label_;
-    int numFloors_;
     
     QLabel* displayLabel_;
 

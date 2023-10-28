@@ -29,11 +29,13 @@ class GraphicsGenerator;
 // ENUMs
 ///////////////////////////////////////////////////////////////////////////////////////
 
-enum DoorState{OPEN, CLOSED};
+enum DoorState{OPEN, CLOSED, OBSTRUCTED};
 
 enum LightState{ON,OFF, UNKNOWN};
 
 enum RequestDirection{REQ_UP, REQ_DOWN, REQ_IDLE};
+
+enum EmergencyType{FIRE, POWER_OUTAGE, HELP, BLANK};
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // STRUCTs
@@ -62,6 +64,24 @@ struct special_compare : public std::unary_function<ServiceRequest, bool>
   bool operator() (const ServiceRequest &arg)
   { return arg.level == baseline.level && arg.direction == baseline.direction; }
   ServiceRequest baseline;
+};
+
+struct EmergencyRequest 
+{
+    EmergencyRequest()
+    {
+        level = -1;
+        type = EmergencyType::BLANK;
+    }
+
+    EmergencyRequest(const int l, const EmergencyType t)
+    {
+        level = l;
+        type = t;
+    }
+
+    int level;
+    EmergencyType type;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////

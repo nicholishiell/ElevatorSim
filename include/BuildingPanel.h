@@ -29,8 +29,7 @@ private slots:
 
 signals:
 
-    void FireAlarm(const int level);
-    void PowerOutageAlarm();
+    void EmergencyRequested(const EmergencyRequest request);
 
 private:
 

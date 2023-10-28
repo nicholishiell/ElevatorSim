@@ -37,6 +37,9 @@ public:
     void HandlePowerOutageAlarm(ElevatorSharedPtrVector elevators,
                                 FloorSharedPtrVector floors);
 
+    // Concrete definition 
+    void HandleHelpRequest(const int level);
+
 private:
 
     ServiceRequestVector pendingRequests_;

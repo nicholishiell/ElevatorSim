@@ -32,7 +32,7 @@ public:
 
     // These functions are used to "construct" the building 
     void AddFloor(std::string label);
-    void AddElevator(std::string label, int floor, DoorState state);
+    void AddElevator(std::string label, DoorState state, const float height);
 
     // Run the simulation for a single time step
     void Update(const float timeStep);
@@ -46,15 +46,20 @@ public:
     ElevatorSharedPtr GetElevator(const int i) const {return elevators_[i];}
     FloorSharedPtr GetFloor(const int i) const {return floors_[i];}
 
+    void Initialize();
+    bool IsInitialized(){return initialized_;}
+
 public slots:
 
     // These functions are supplied by the controller passed in (strategy pattern)
     void HandleServiceRequest(const ServiceRequest request);
-    void HandleFireAlarm(const int level);
-    void HandlePowerOutageAlarm();
-
+    
+    void HandleEmergencyRequest(const EmergencyRequest request);
+    
 private:
    
+    bool initialized_;
+
     void updateFloors(const float timeStep);
     void updateElevators(const float timeStep);
     void updatePeople(const float timeStep);

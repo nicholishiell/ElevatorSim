@@ -34,45 +34,48 @@ GraphicsGenerator::paint(   QPainter *painter,
                             const QStyleOptionGraphicsItem *option,
                             QWidget *widget)
 { 
-    // Draw the cartoon representation of the floors
-    float y = 0;
-   
-    for(int iFloor = buildingSim_->GetNumberOfFloors()-1; iFloor >= 0; iFloor--)
-    {             
-        auto floorImage = drawFloor(buildingSim_->GetFloor(iFloor));
+    if(buildingSim_->IsInitialized())
+    {
+        // Draw the cartoon representation of the floors
+        float y = 0;
+    
+        for(int iFloor = buildingSim_->GetNumberOfFloors()-1; iFloor >= 0; iFloor--)
+        {             
+            auto floorImage = drawFloor(buildingSim_->GetFloor(iFloor));
+
+            for(u_int iElevator = 0; iElevator  < buildingSim_->GetNumberOfElevators(); iElevator++)
+            {
+                // TODO: Seg fault starts here
+                floorImage = drawElevatorOnFloor(   buildingSim_->GetElevator(iElevator),
+                                                    floorImage,
+                                                    iFloor,
+                                                    iElevator);
+            }
+
+            painter->drawPixmap(0,y,0.35*FLOOR_WIDTH,0.35*FLOOR_HEIGHT,floorImage);
+
+            y = y + 0.35*FLOOR_HEIGHT+ 10;
+        }
+    
+        // Draw the basic drawing of the elevators locations
+        painter->setPen(QColor(0,0,255));
+
+        auto totalHeightPixels = (0.35*FLOOR_HEIGHT+ 10) * buildingSim_->GetNumberOfFloors();
+        auto totalHeightMeters = FLOOR_HEIGHT_METERS * buildingSim_->GetNumberOfFloors();
+
+        // TODO: this should be a const in utility
+        auto elevator_height = 100;
 
         for(u_int iElevator = 0; iElevator  < buildingSim_->GetNumberOfElevators(); iElevator++)
         {
-            // TODO: Seg fault starts here
-            floorImage = drawElevatorOnFloor(   buildingSim_->GetElevator(iElevator),
-                                                floorImage,
-                                                iFloor,
-                                                iElevator);
+            auto elevator = buildingSim_->GetElevator(iElevator);
+            auto elevatorHeightMeters = elevator->GetHeight();
+
+            auto elevatorX = (0.35*FLOOR_WIDTH + 100 +iElevator*125);
+            auto elevatorY = totalHeightPixels * (1. - elevatorHeightMeters/totalHeightMeters) - elevator_height - 25;
+
+            painter->drawRect(elevatorX, elevatorY, 60, 100);
         }
-
-        painter->drawPixmap(0,y,0.35*FLOOR_WIDTH,0.35*FLOOR_HEIGHT,floorImage);
-
-        y = y + 0.35*FLOOR_HEIGHT+ 10;
-    }
-   
-    // Draw the basic drawing of the elevators locations
-    painter->setPen(QColor(0,0,255));
-
-    auto totalHeightPixels = (0.35*FLOOR_HEIGHT+ 10) * buildingSim_->GetNumberOfFloors();
-    auto totalHeightMeters = FLOOR_HEIGHT_METERS * buildingSim_->GetNumberOfFloors();
-
-    // TODO: this should be a const in utility
-    auto elevator_height = 100;
-
-    for(u_int iElevator = 0; iElevator  < buildingSim_->GetNumberOfElevators(); iElevator++)
-    {
-        auto elevator = buildingSim_->GetElevator(iElevator);
-        auto elevatorHeightMeters = elevator->GetHeight();
-
-        auto elevatorX = (0.35*FLOOR_WIDTH + 100 +iElevator*125);
-        auto elevatorY = totalHeightPixels * (1. - elevatorHeightMeters/totalHeightMeters) - elevator_height - 25;
-
-        painter->drawRect(elevatorX, elevatorY, 60, 100);
     }
 }
 

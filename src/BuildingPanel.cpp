@@ -35,7 +35,7 @@ BuildingPanel::SoundFireAlarm()
     }
     else
     {
-        emit (FireAlarm(-1));
+        emit (EmergencyRequested(EmergencyRequest(-1,EmergencyType::FIRE)));
         isFireAlarmActive_ = true;
     }
 }
@@ -48,7 +48,7 @@ void BuildingPanel::SoundPowerOutageAlarm()
     }
     else
     {
-        emit (PowerOutageAlarm());
+         emit (EmergencyRequested(EmergencyRequest(-1,EmergencyType::POWER_OUTAGE)));
         isPowerOutageAlarmActive_= true;
     }
 }

@@ -40,7 +40,8 @@ public:
 
     virtual void HandlePowerOutageAlarm(ElevatorSharedPtrVector elevators,
                                         FloorSharedPtrVector floors) = 0;
-
+    
+    virtual void HandleHelpRequest(const int level) = 0;
 };
 
 #endif

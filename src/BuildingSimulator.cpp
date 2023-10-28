@@ -4,14 +4,12 @@
 
 BuildingSimulator::BuildingSimulator(ControllerSharedPtr controller)
 {
-    buildingPanel_ = std::make_shared<BuildingPanel>();
-    
-    QObject::connect(buildingPanel_.get(),&BuildingPanel::FireAlarm,this,&BuildingSimulator::HandleFireAlarm);
-    QObject::connect(buildingPanel_.get(),&BuildingPanel::PowerOutageAlarm,this,&BuildingSimulator::HandlePowerOutageAlarm);
-
+    buildingPanel_ = nullptr;
     controller_ = controller;
 
     graphicsObserver_ = nullptr;
+
+    initialized_ = false;
 }
 
 BuildingSimulator::~BuildingSimulator()
@@ -28,15 +26,7 @@ BuildingSimulator::AddFloor(std::string label)
     if(numFloors <= MAX_NUMBER_OF_FLOORS)
     {
         auto newFloor = std::make_shared<Floor>(label, numFloors);
-        newFloor->SetNumElevators(static_cast<int>(elevators_.size()));
-        
-        auto floorPanel = newFloor->GetPanel();
-        QObject::connect(floorPanel.get(), &FloorPanel::ServiceRequested, this, &BuildingSimulator::HandleServiceRequest);
-
         floors_.emplace_back(newFloor);
-
-        for(auto elevator : elevators_)        
-            elevator->SetNumberOfFloors(static_cast<int>(floors_.size()));
     }
     else
     {
@@ -46,47 +36,91 @@ BuildingSimulator::AddFloor(std::string label)
 
 // Add an elevator to the control system
 void 
-BuildingSimulator::AddElevator(std::string label, int level, DoorState state)
+BuildingSimulator::AddElevator( std::string label, 
+                                DoorState state, 
+                                const float height)
 {
     auto numElevators = static_cast<int>(elevators_.size());
 
     if(numElevators <= MAX_NUMBER_OF_ELEVATORS)
     {
         auto numFloors = static_cast<int>(floors_.size());
-        auto newElevator = std::make_shared<Elevator>(label, state, level, numFloors);
+        auto newElevator = std::make_shared<Elevator>(label, state, height);
         
         elevators_.emplace_back(newElevator);
-
-        for(auto floor : floors_)
-            floor->SetNumElevators(static_cast<int>(elevators_.size()));
     }
     else
         std::cout << "Maximum # of Elevators reached" << std::endl;
 }
 
+void 
+BuildingSimulator::Initialize()
+{               
+    buildingPanel_ = std::make_shared<BuildingPanel>(); 
+    QObject::connect(buildingPanel_.get(),&BuildingPanel::EmergencyRequested,this,&BuildingSimulator::HandleEmergencyRequest);  
+
+    for(auto& floor : floors_)
+    {
+        auto panel = std::make_shared<FloorPanel>(  floor->GetLabel(), 
+                                                    this->GetNumberOfElevators(), 
+                                                    floor->GetLevel());
+        QObject::connect(panel.get(), &FloorPanel::ServiceRequested, this, &BuildingSimulator::HandleServiceRequest);
+
+        floor->SetPanel(panel);
+    }
+
+    for(auto& elevator : elevators_)
+    {
+        auto panel = std::make_shared<ElevatorPanel>(   elevator->GetLabel(),
+                                                        this->GetNumberOfFloors());
+        QObject::connect(panel.get(), &ElevatorPanel::ServiceRequested, this, &BuildingSimulator::HandleServiceRequest);
+        QObject::connect(panel.get(), &ElevatorPanel::EmergencyRequested, this, &BuildingSimulator::HandleEmergencyRequest);
+
+        elevator->SetPanel(panel);
+    }
+
+    initialized_ = true;
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Public SLOTS
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void 
 BuildingSimulator::HandleServiceRequest(const ServiceRequest request)
 {
+    if(!initialized_) Initialize();
+
     controller_->HandleServiceRequest(request, elevators_, floors_);
 }
 
-void 
-BuildingSimulator::HandleFireAlarm(const int level)
+void
+BuildingSimulator::HandleEmergencyRequest(const EmergencyRequest request)
 {
-    controller_->HandleFireAlarm(level, elevators_, floors_);
+    if(request.type == EmergencyType::FIRE)
+    {
+        controller_->HandleFireAlarm(request.level, elevators_, floors_);   
+    }
+    else if(request.type == EmergencyType::POWER_OUTAGE)
+    {
+        controller_->HandlePowerOutageAlarm(elevators_, floors_);
+    }
+    else if(request.type == EmergencyType::HELP)
+    {
+        controller_->HandleHelpRequest(request.level);
+    }
+    else
+    {
+        std::cout << "Unknown Emergency Request." << std::endl;
+    }
 }
 
-void 
-BuildingSimulator::HandlePowerOutageAlarm()
-{
-    controller_->HandlePowerOutageAlarm(elevators_, floors_);
-}
-
-//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Updating the simulations one time step
 void
 BuildingSimulator::Update(const float timeStep)
 {
+    if(!initialized_) Initialize();
+
     this->updateElevators(timeStep);
 
     this->updateFloors(timeStep);

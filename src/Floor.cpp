@@ -6,20 +6,13 @@ Floor::Floor(   const std::string label,
     label_ = label;
     level_ = level;
 
-    panel_ = std::make_shared<FloorPanel>(label,level);
+    panel_ = nullptr;
 }
 
 Floor::~Floor()
 {
 
 }  
-
-void 
-Floor::SetNumElevators(const int numElevators)
-{
-    panel_->SetNumberOfElevators(numElevators);
-}
-
 
 void 
 Floor::UpRequestServiced()

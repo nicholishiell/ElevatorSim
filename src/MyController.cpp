@@ -59,6 +59,12 @@ MyController::HandleServiceRequest( const ServiceRequest request,
     }
 }
 
+void
+MyController::HandleHelpRequest(const int level)
+{
+    std::cout << "Help requested on floor: " << level << std::endl;
+}
+
 void 
 MyController::Step( const float timeStep,
                     ElevatorSharedPtrVector elevators,
