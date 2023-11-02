@@ -23,10 +23,9 @@ public:
                     
     virtual ~ElevatorPanel();   
 
-    ServiceRequestVector PopRequests();
-
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // All these functions relate to the GUI
     void RingBell();
-
     void DisplayMessage(const std::string& msg);
 
     void AudioMessage();
@@ -34,13 +33,36 @@ public:
     void SetOverloadState(const bool s);
     void SetDoorObstructedState(const bool s);
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // All these functions relate to operationing the elevator
+    ServiceRequestVector PopRequests();
+   
+    int GetLevel() const {return currentLevel_;}
+    void SetLevel(const int level);
+    void CalculateCurrentLevel(const float height);
+    int GetNumberOfFloors() const {return numberOfFloors_;}
+    int GetNearestLevel(const float height);
+
+    ServiceRequest GetCurrentlyServicing() const {return currentlyServicing_;}
+    void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
+    bool IsGoingDown() const {return currentlyServicing_.direction == RequestDirection::REQ_DOWN;}
+
+
+    bool IsOpenDoorButtionActive() const {return openDoor_;}
+    bool IsCloseDoorButtionActive() const {return closeDoor_;}
+
+    // Functions used to add routes to the elevator  
+    void AddToRoute(const ServiceRequest& request);
+    bool IsRouteEmpty() const {return route_.empty();}
+    void DisplayRoute() const;
+    void PopRoute();
+
 private slots:
 
-    void FireButtonPresssed();
     void HelpButtonPresssed();
 
-    void OpenButtonPresssed();
-    void CloseButtonPresssed();
+    void OpenButtonInteraction();
+    void CloseButtonInteraction();
 
     void FloorButtonPresssed();
 
@@ -51,8 +73,9 @@ signals:
     void ServiceRequested(const ServiceRequest& request);
 
 private:
-
-    ServiceRequestVector requests_;
+    
+    bool openDoor_;
+    bool closeDoor_;
     
     QLabel* displayLabel_;
 
@@ -61,6 +84,11 @@ private:
 
     AnimatedImage* bell_;
     AnimatedImage* speaker_;
+
+    ServiceRequestVector route_;
+    ServiceRequest currentlyServicing_;
+    int currentLevel_;
+    int numberOfFloors_;
 };
 
 #endif

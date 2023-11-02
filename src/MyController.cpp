@@ -17,14 +17,40 @@ MyController::HandleFireAlarm(  const int level,
                                 ElevatorSharedPtrVector elevators,
                                 FloorSharedPtrVector floors)
 {
-    std::cout << "handleFireAlarm on level "<< level << std::endl;
-
     for(auto floor : floors)
     {
+        // TODO: Add a fire on the specified level
     }
 
     for(auto elevator : elevators)
     {
+        auto currentLevel = elevator->GetPanel()->GetLevel();
+        
+        if(elevator->GetStateString() == "IDLE" && currentLevel != level)
+        {
+        
+            elevator->Disable();
+        }
+        else
+        {
+            auto targetLevel = elevator->GetPanel()->GetNearestLevel(elevator->GetHeight());
+            
+            auto emergencyServiceRequest = ServiceRequest();
+            if(targetLevel > elevator->GetPanel()->GetLevel())
+            {
+                elevator->GetPanel()->SetLevel(targetLevel-1);
+                emergencyServiceRequest = ServiceRequest(targetLevel, RequestDirection::REQ_UP);
+            }
+            else
+            {
+                elevator->GetPanel()->SetLevel(targetLevel+1);
+                emergencyServiceRequest = ServiceRequest(targetLevel, RequestDirection::REQ_DOWN);
+            }
+ 
+            elevator->GetPanel()->SetCurrentlyServicing(emergencyServiceRequest);
+        
+            elevator->Disable();            
+        }
     }
 }
 
@@ -32,13 +58,27 @@ void
 MyController::HandlePowerOutageAlarm(   ElevatorSharedPtrVector elevators,
                                         FloorSharedPtrVector floors)
 {
-    std::cout << "handlePowerOutageAlarm" << std::endl;
-        for(auto floor : floors)
+    for(auto floor : floors)
     {
+        // TODO: Have all the lights become dimmed and red?
     }
 
     for(auto elevator : elevators)
     {
+        if(elevator->GetStateString() == "IDLE")
+        {
+            elevator->Disable();
+        }
+        else
+        {
+            auto targetLevel = std::max(elevator->GetPanel()->GetLevel() - 1, 0);
+            elevator->GetPanel()->SetLevel(targetLevel+1);
+
+            auto emergencyServiceRequest = ServiceRequest(targetLevel, RequestDirection::REQ_DOWN);
+            elevator->GetPanel()->SetCurrentlyServicing(emergencyServiceRequest);
+            
+            elevator->Disable();            
+        }
     }
 }
 
@@ -112,7 +152,7 @@ MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
                 continue;
 
             // Skip elevators that are already passed the request level
-            auto levelDiff = request.level - elevator->GetLevel();
+            auto levelDiff = request.level - elevator->GetPanel()->GetLevel();
 
             if( (elevator->GetStateString() == "UP" && levelDiff < 0) ||
                 (elevator->GetStateString() == "DOWN" && levelDiff > 0) )
@@ -129,7 +169,7 @@ MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
         if(assignedElevator != nullptr)
         {
             // Assign it to the elevator
-            assignedElevator->AddToRoute(request);
+            assignedElevator->GetPanel()->AddToRoute(request);
             
             // Remove it from the pending list
             pendingRequests_.erase(requestIter);

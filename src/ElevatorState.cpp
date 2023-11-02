@@ -7,15 +7,15 @@ ElevatorState*
 ElevatorStateIdle::Update(  ElevatorSharedPtr elevator, 
                             const float timeStep)
 {
-    elevator->CloseDoor();
+    auto panel = elevator->GetPanel();
 
-    if(!elevator->IsRouteEmpty())
+    if(!panel->IsRouteEmpty())
     {
         return new ElevatorStateLeaving();
     }
     else
     {
-        elevator->SetCurrentlyServicing(ServiceRequest(elevator->GetLevel(), RequestDirection::REQ_IDLE));
+        panel->SetCurrentlyServicing(ServiceRequest(panel->GetLevel(), RequestDirection::REQ_IDLE));
         return nullptr;
     }
 
@@ -32,16 +32,18 @@ ElevatorStateLeaving::Update(   ElevatorSharedPtr elevator,
     // TODO: to make sure the door is closed and we are not overloaded, or there is a fire
     elevator->CloseDoor();
 
-    // // Get the next route off the route vector
-    elevator->SetCurrentlyServicing(elevator->PopRoute());
+    auto panel = elevator->GetPanel();
+
+    // Get the next route off the route vector
+    panel->PopRoute();
 
     // Determine which direction to head
-    if(elevator->GetCurrentlyServicing().level > elevator->GetLevel())
+    if(panel->GetCurrentlyServicing().level > panel->GetLevel())
         return  new ElevatorStateUp();
-    else if(elevator->GetCurrentlyServicing().level < elevator->GetLevel())
+    else if(panel->GetCurrentlyServicing().level < panel->GetLevel())
         return new ElevatorStateDown();
     else
-        return new ElevatorStateIdle();
+        return new ElevatorStateArrived();
 
     return nullptr;
 }
@@ -56,7 +58,9 @@ ElevatorStateUp::Update(ElevatorSharedPtr elevator,
     auto delta = timeStep*ELEVATOR_SPEED;
     elevator->UpdateHeight(delta);
 
-    if(elevator->GetLevel() == elevator->GetCurrentlyServicing().level)
+    auto panel = elevator->GetPanel();
+
+    if(panel->GetLevel() == panel->GetCurrentlyServicing().level)
     {
         return new ElevatorStateArrived();
     }
@@ -74,6 +78,8 @@ ElevatorStateDown::Update(  ElevatorSharedPtr elevator,
 {
     auto delta = -1.*timeStep*ELEVATOR_SPEED;
     
+    auto panel = elevator->GetPanel();
+
     if(elevator->GetHeight() + delta > 0.)
     {
         elevator->UpdateHeight(delta);
@@ -83,7 +89,7 @@ ElevatorStateDown::Update(  ElevatorSharedPtr elevator,
         elevator->SetHeight(0.);
     }
 
-    if(elevator->GetLevel() == elevator->GetCurrentlyServicing().level)
+    if(panel->GetLevel() == panel->GetCurrentlyServicing().level)
     {
         return new ElevatorStateArrived();
     }
@@ -113,12 +119,19 @@ ElevatorState*
 ElevatorStateWaiting::Update(   ElevatorSharedPtr elevator, 
                                 const float timeStep)
 {
+    auto panel = elevator->GetPanel();
+
     timeSpentWaiting_ = timeSpentWaiting_ + timeStep;
     
-    if(timeSpentWaiting_ > ELEVATOR_WAIT_TIME)
+    if( (timeSpentWaiting_ > ELEVATOR_WAIT_TIME || panel->IsCloseDoorButtionActive()) && !panel->IsOpenDoorButtionActive())
+    {
+        elevator->CloseDoor();
         return  new ElevatorStateIdle();
+    }
     else
+    {
         return nullptr;  
+    }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,5 +140,31 @@ ElevatorState*
 ElevatorStateDisabled::Update(  ElevatorSharedPtr elevator, 
                                 const float timeStep)
 {
+    auto panel = elevator->GetPanel();
+
+    panel->AudioMessage();
+    panel->RingBell();
+    panel->DisplayMessage("!!!EMERGENCY!!!");
+
+    if(panel->GetLevel() != panel->GetCurrentlyServicing().level)
+    {
+        auto delta = 0.f;
+        if(panel->IsGoingDown())
+        {
+            delta = -1.*timeStep*ELEVATOR_SPEED;
+        }
+        else
+        {
+            delta = timeStep*ELEVATOR_SPEED;
+        }
+        
+        elevator->UpdateHeight(delta);
+    }
+    else
+    {
+        elevator->OpenDoor();
+        panel->SetCurrentlyServicing(ServiceRequest(panel->GetLevel(), RequestDirection::REQ_IDLE));
+    } 
+
     return nullptr;
 }

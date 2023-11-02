@@ -30,8 +30,8 @@ AnimatedImage::AnimatedImage(   const QString& image_base,
 void 
 AnimatedImage::Animate()
 {
-    currentPixmap = 0;
-    timer.start(100);
+    if(!timer.isActive())
+        timer.start(100);
 }
 
 void 
@@ -45,6 +45,7 @@ AnimatedImage::changeImage()
     else
     {
         timer.stop();
-        setPixmap(pixmaps.at(0));
+        currentPixmap = 0;
+        setPixmap(pixmaps.at(currentPixmap));
     }
 }

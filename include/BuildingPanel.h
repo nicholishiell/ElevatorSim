@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QPushButton>
+#include <QComboBox>
 
 #include <iostream>
 
@@ -14,7 +15,7 @@ class BuildingPanel : public QWidget
     Q_OBJECT
 
 public:
-    BuildingPanel(QWidget *parent = nullptr); 
+    BuildingPanel(const int numFloors, QWidget *parent = nullptr); 
 
     virtual ~BuildingPanel();   
 
@@ -32,6 +33,8 @@ signals:
     void EmergencyRequested(const EmergencyRequest request);
 
 private:
+
+    QComboBox* floorSelector;
 
     bool isFireAlarmActive_ = false;
     bool isPowerOutageAlarmActive_ = false;

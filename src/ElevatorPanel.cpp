@@ -1,11 +1,23 @@
 #include "include/ElevatorPanel.h"
 #include "include/FloorButton.h"
 
+#include <cmath>
+#include <limits>
 
 #include <QGridLayout>
 #include <QPixmap>
 #include <QLabel>
 #include <QString>
+
+std::string
+int_to_string(const int i)
+{
+    std::stringstream ss;
+    std::string s;
+    ss << i;
+    ss >> s;
+    return s;
+}
 
 ElevatorPanel::ElevatorPanel(   const std::string label, 
                                 const int numFloors,
@@ -13,20 +25,21 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
 {
     // Create all the compulsory buttons
     auto gridLayout = new QGridLayout(this);
-    auto fireButton = new QPushButton("FIRE", this);
     auto helpButton = new QPushButton("HELP", this);
     auto openButton = new QPushButton("OP", this);
     auto closeButton = new QPushButton("CD", this);
-    
-    gridLayout->addWidget(fireButton,0,0);
-    gridLayout->addWidget(helpButton,0,1);
+
+    gridLayout->addWidget(helpButton,0,0,1,2);
     gridLayout->addWidget(openButton,1,0);
     gridLayout->addWidget(closeButton,1,1);
 
-    QObject::connect(fireButton, &QPushButton::clicked, this, &ElevatorPanel::FireButtonPresssed);
     QObject::connect(helpButton, &QPushButton::clicked, this, &ElevatorPanel::HelpButtonPresssed);
-    QObject::connect(openButton, &QPushButton::clicked, this, &ElevatorPanel::OpenButtonPresssed); // TODO: This should change to pressed not clicked
-    QObject::connect(closeButton, &QPushButton::clicked, this, &ElevatorPanel::CloseButtonPresssed);
+    
+    QObject::connect(openButton, &QPushButton::pressed, this, &ElevatorPanel::OpenButtonInteraction);
+    QObject::connect(openButton, &QPushButton::released, this, &ElevatorPanel::OpenButtonInteraction);
+    
+    QObject::connect(closeButton, &QPushButton::pressed, this, &ElevatorPanel::CloseButtonInteraction);
+    QObject::connect(closeButton, &QPushButton::released, this, &ElevatorPanel::CloseButtonInteraction);
 
     auto line1 = new QFrame;
     line1->setFrameShape(QFrame::HLine);
@@ -88,6 +101,10 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
     this->setWindowTitle(QString::fromStdString(label));
 
     this->show();
+
+    numberOfFloors_ = numFloors;
+    openDoor_ = false;
+    closeDoor_ = false;
 }
 
 ElevatorPanel::~ElevatorPanel()
@@ -95,14 +112,71 @@ ElevatorPanel::~ElevatorPanel()
 
 } 
 
-ServiceRequestVector 
-ElevatorPanel::PopRequests()
+void 
+ElevatorPanel::SetLevel(const int level) 
 {
-    auto temp = requests_;
+    currentLevel_ = level;
+    this->DisplayMessage(int_to_string(currentLevel_));
+}
 
-    requests_.erase(requests_.begin(),requests_.end());
+void 
+ElevatorPanel::CalculateCurrentLevel(const float height)
+{
+    for(int i = 0; i < numberOfFloors_; i++)
+    {
+        if( std::fabs(height - i*FLOOR_HEIGHT_METERS) < 0.01 )
+        {
+            SetLevel(i);
+        }
+    }
+}
+int 
+ElevatorPanel::GetNearestLevel(const float height)
+{
+    auto nearestLevel = 0;
+    float currentMin = std::numeric_limits<float>::max();
 
-    return temp;
+    for(int i = 0; i < numberOfFloors_; i++)
+    {
+        auto diff = height - i*FLOOR_HEIGHT_METERS;
+        if(height - i*FLOOR_HEIGHT_METERS < currentMin)
+        {
+            nearestLevel = i;
+            currentMin = diff;
+        }
+    } 
+
+    return nearestLevel;
+}
+
+void 
+ElevatorPanel::AddToRoute(const ServiceRequest& request)
+{
+    // Only add a level once to the route
+    if(std::find_if(route_.begin(), route_.end(), special_compare(request)) == route_.end())  
+        route_.emplace_back(request);
+}
+
+void 
+ElevatorPanel::DisplayRoute() const
+{
+    for(auto r : route_)
+        std::cout << "(" << r.level << ", " << r.direction << ") ";
+    std::cout << std::endl;
+}
+void
+ElevatorPanel::PopRoute()
+{      
+    ServiceRequest nextRequest(currentLevel_, REQ_IDLE);
+
+    if(route_.size() > 0)
+    {
+        nextRequest = route_[0];
+        route_.front() = std::move(route_.back());
+        route_.pop_back();
+    }
+
+    currentlyServicing_ = nextRequest;
 }
 
 void 
@@ -148,21 +222,29 @@ ElevatorPanel::SetDoorObstructedState(const bool s)
 }
 
 void 
-ElevatorPanel::OpenButtonPresssed()
+ElevatorPanel::OpenButtonInteraction()
 {
-
+    if(openDoor_)
+    {
+        openDoor_ = false;
+    }
+    else
+    {
+        openDoor_ = true;
+    }
 }
 
 void 
-ElevatorPanel::CloseButtonPresssed()
+ElevatorPanel::CloseButtonInteraction()
 {
-
-}
-
-void 
-ElevatorPanel::FireButtonPresssed()
-{
-
+    if(closeDoor_)
+    {
+        closeDoor_ = false;
+    }
+    else
+    {
+        closeDoor_ = true;
+    }
 }
 
 void 
@@ -175,8 +257,15 @@ void
 ElevatorPanel::FloorButtonPresssed()
 {
     FloorButton* buttonSender = qobject_cast<FloorButton*>(sender()); // retrieve the button you have clicked
-    QString buttonText = buttonSender->text(); // retrive the text from the button clicked
+   
+    auto requestedLevel = buttonSender->GetLevel();
 
-    requests_.emplace_back( buttonSender->GetLevel(), 
-                            RequestDirection::REQ_IDLE);
+    auto currentDirection =  currentlyServicing_.direction;
+
+    if( requestedLevel > currentLevel_ && 
+        (currentDirection == RequestDirection::REQ_UP || currentDirection == RequestDirection::REQ_IDLE))
+        route_.emplace_back(requestedLevel, RequestDirection::REQ_UP);
+    if( requestedLevel < currentLevel_ && 
+        (currentDirection == RequestDirection::REQ_UP || currentDirection == RequestDirection::REQ_IDLE))
+        route_.emplace_back(requestedLevel, RequestDirection::REQ_DOWN);   
 }

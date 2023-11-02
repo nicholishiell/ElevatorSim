@@ -18,37 +18,21 @@ class Elevator : public QObject, public std::enable_shared_from_this<Elevator>
 public:
     Elevator(const std::string label, DoorState doorState, const float height); 
     virtual ~Elevator();   
-
-    int GetLevel() const {return currentLevel_;}
     
+    std::string GetLabel() const {return label_;}
+
     float GetHeight() const {return height_;}
-    void SetHeight(const float height){height_ = height;}
+    void SetHeight(const float height);
     void UpdateHeight(const float deltaH);
 
     std::string GetStateString() const;
+   
+    ElevatorPanelSharedPtr GetPanel() const {return panel_;}
+    void SetPanel(ElevatorPanelSharedPtr panel);
 
     DoorState GetDoorState() const {return doorState_;}
-
-    std::string GetLabel() const {return label_;}
-
-    void SetNumberOfFloors(const int numFloors) {numberOfFloors_ = numFloors;}
-
-    ServiceRequest GetCurrentlyServicing() const {return currentlyServicing_;}
-    void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
-
-    ElevatorPanelSharedPtr GetPanel() const {return panel_;}
-    void SetPanel(ElevatorPanelSharedPtr panel){panel_ = panel;}
-
-    std::string StateString() const;
-
     void OpenDoor();
-
     void CloseDoor();
-
-    bool IsRouteEmpty() const {return route_.empty();}
-
-    // Functions used to add routes to the elevator  
-    void AddToRoute(const ServiceRequest& request);
 
     // Updates the state and position of the elevator
     void Update(const float timeStep);
@@ -59,36 +43,39 @@ public:
 
     void ToConsole() const;
 
+    // Used in case of emergencies.
+    void Disable();
+    void Enable();
+
  private:
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Private methods
-    void handlePendingRequests();
 
     bool checkOverloaded();
 
     bool checkDoorObstructed();
 
-    // Private members
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // People currently on the elvators
+    PersonVector passengers_;
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Panel that controls the elevator
+    ElevatorPanelSharedPtr panel_;
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Everything related to the state
+    ElevatorState* elevatorState_;
+
+    bool doorObstructed_;
     DoorState doorState_;
   
     float height_;
 
-    bool doorObstructed_;
-
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // other private members
     std::string label_;
-
-    ElevatorState* elevatorState_;
-
-    PersonVector passengers_;
-
-    // all these should be stored in the panel
-    ElevatorPanelSharedPtr panel_;
-    std::vector<ServiceRequest> route_;
-    ServiceRequest currentlyServicing_;
-    int currentLevel_;
-
-    // this should be gotten rid off
-    int numberOfFloors_;    
 };
 
 
