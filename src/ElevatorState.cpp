@@ -15,7 +15,7 @@ ElevatorStateIdle::Update(  ElevatorSharedPtr elevator,
     }
     else
     {
-        panel->SetCurrentlyServicing(ServiceRequest(panel->GetLevel(), RequestDirection::REQ_IDLE));
+        panel->SetCurrentlyServicing(ServiceRequest(panel->GetPreviousFloor(), RequestDirection::REQ_IDLE));
         return nullptr;
     }
 
@@ -38,9 +38,9 @@ ElevatorStateLeaving::Update(   ElevatorSharedPtr elevator,
     panel->PopRoute();
 
     // Determine which direction to head
-    if(panel->GetCurrentlyServicing().level > panel->GetLevel())
+    if(panel->GetCurrentlyServicing().level > panel->GetPreviousFloor())
         return  new ElevatorStateUp();
-    else if(panel->GetCurrentlyServicing().level < panel->GetLevel())
+    else if(panel->GetCurrentlyServicing().level < panel->GetPreviousFloor())
         return new ElevatorStateDown();
     else
         return new ElevatorStateArrived();
@@ -60,7 +60,7 @@ ElevatorStateUp::Update(ElevatorSharedPtr elevator,
 
     auto panel = elevator->GetPanel();
 
-    if(panel->GetLevel() == panel->GetCurrentlyServicing().level)
+    if(panel->ArrivedAtTargetFloor())
     {
         return new ElevatorStateArrived();
     }
@@ -89,7 +89,7 @@ ElevatorStateDown::Update(  ElevatorSharedPtr elevator,
         elevator->SetHeight(0.);
     }
 
-    if(panel->GetLevel() == panel->GetCurrentlyServicing().level)
+    if(panel->ArrivedAtTargetFloor())
     {
         return new ElevatorStateArrived();
     }
@@ -146,7 +146,7 @@ ElevatorStateDisabled::Update(  ElevatorSharedPtr elevator,
     panel->RingBell();
     panel->DisplayMessage("!!!EMERGENCY!!!");
 
-    if(panel->GetLevel() != panel->GetCurrentlyServicing().level)
+    if(!panel->ArrivedAtTargetFloor())
     {
         auto delta = 0.f;
         if(panel->IsGoingDown())
@@ -163,7 +163,7 @@ ElevatorStateDisabled::Update(  ElevatorSharedPtr elevator,
     else
     {
         elevator->OpenDoor();
-        panel->SetCurrentlyServicing(ServiceRequest(panel->GetLevel(), RequestDirection::REQ_IDLE));
+        panel->SetCurrentlyServicing(ServiceRequest(panel->GetPreviousFloor(), RequestDirection::REQ_IDLE));
     } 
 
     return nullptr;

@@ -56,6 +56,8 @@ public slots:
     
     void HandleEmergencyRequest(const EmergencyRequest request);
     
+    void HandleEnableElevators();
+    
 private:
    
     bool initialized_;

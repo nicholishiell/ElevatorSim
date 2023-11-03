@@ -58,6 +58,7 @@ BuildingSimulator::Initialize()
 {               
     buildingPanel_ = std::make_shared<BuildingPanel>(this->GetNumberOfFloors()); 
     QObject::connect(buildingPanel_.get(),&BuildingPanel::EmergencyRequested,this,&BuildingSimulator::HandleEmergencyRequest);  
+    QObject::connect(buildingPanel_.get(),&BuildingPanel::EnableElevators,this,&BuildingSimulator::HandleEnableElevators);
 
     for(auto& floor : floors_)
     {
@@ -93,6 +94,14 @@ BuildingSimulator::HandleServiceRequest(const ServiceRequest request)
 
     controller_->HandleServiceRequest(request, elevators_, floors_);
 }
+
+void
+BuildingSimulator::HandleEnableElevators()
+{
+    for(auto elevator : elevators_)
+        elevator->Enable();
+}
+
 
 void
 BuildingSimulator::HandleEmergencyRequest(const EmergencyRequest request)
@@ -156,7 +165,7 @@ BuildingSimulator::updateFloors(const float timeStep)
     for(unsigned int i = 0; i < elevators_.size(); i++)
     {
         auto panel = elevators_[i]->GetPanel();
-        auto level = panel->GetLevel();
+        auto level = panel->GetPreviousFloor();
         auto currentRequest = panel->GetCurrentlyServicing();
 
         // Turn elevator light for the floor it is currently on

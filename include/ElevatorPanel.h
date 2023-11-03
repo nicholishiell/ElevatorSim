@@ -37,17 +37,27 @@ public:
     // All these functions relate to operationing the elevator
     ServiceRequestVector PopRequests();
    
-    int GetLevel() const {return currentLevel_;}
-    void SetLevel(const int level);
+    int GetPreviousFloor() const {return floorPos_.prevFloor;}
+    int GetNextFloor() const {return floorPos_.nextFloor;}
+
+    bool HasArrivedAtFloor(const int floor) const;
+    bool ArrivedAtTargetFloor() const;
+    bool IsBetweenFloors() const {return floorPos_.nextFloor != floorPos_.prevFloor;}
+    bool AtTop() const {return HasArrivedAtFloor(numberOfFloors_);}
+    bool AtBottom() const {return HasArrivedAtFloor(0);}
+
     void CalculateCurrentLevel(const float height);
+    
     int GetNumberOfFloors() const {return numberOfFloors_;}
+    
     int GetNearestLevel(const float height);
 
     ServiceRequest GetCurrentlyServicing() const {return currentlyServicing_;}
-    void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
     bool IsGoingDown() const {return currentlyServicing_.direction == RequestDirection::REQ_DOWN;}
 
-
+    void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
+    void GoToFloor(const int i);
+        
     bool IsOpenDoorButtionActive() const {return openDoor_;}
     bool IsCloseDoorButtionActive() const {return closeDoor_;}
 
@@ -87,7 +97,7 @@ private:
 
     ServiceRequestVector route_;
     ServiceRequest currentlyServicing_;
-    int currentLevel_;
+    FloorPosition floorPos_;
     int numberOfFloors_;
 };
 

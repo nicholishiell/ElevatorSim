@@ -8,15 +8,18 @@ BuildingPanel::BuildingPanel(   const int numFloors,
 {
     auto gridLayout = new QGridLayout(this);
     auto fireButton = new QPushButton("FIRE", this);
-    auto powerOutageButton = new QPushButton("PO", this);
+    auto powerOutageButton = new QPushButton("PW Out", this);
+    auto enableButton = new QPushButton("ENABLE", this);
     floorSelector = new QComboBox();
 
     gridLayout->addWidget(fireButton,0,0);
     gridLayout->addWidget(powerOutageButton,0,1);
-    gridLayout->addWidget(floorSelector,1,0,1,2);
+    gridLayout->addWidget(enableButton,1,0,1,2);
+    gridLayout->addWidget(floorSelector,2,0,1,2);
 
     QObject::connect(fireButton, &QPushButton::clicked, this, &BuildingPanel::SoundFireAlarm);
     QObject::connect(powerOutageButton, &QPushButton::clicked, this, &BuildingPanel::SoundPowerOutageAlarm);
+    QObject::connect(enableButton, &QPushButton::clicked, this, &BuildingPanel::EnabledPressed);
 
     for(int i = 0; i < numFloors; i++)
         floorSelector->addItem(QString::number(i));
@@ -59,3 +62,8 @@ void BuildingPanel::SoundPowerOutageAlarm()
     }
 }
 
+void
+BuildingPanel::EnabledPressed()
+{
+    emit(EnableElevators());
+}

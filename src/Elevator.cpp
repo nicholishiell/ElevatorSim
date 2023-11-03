@@ -54,7 +54,9 @@ void
 Elevator::ToConsole() const
 {
     // Display info to the console
-    std::cout << label_ << "\t" << panel_->GetLevel() << "\t" << height_ << "\t" << elevatorState_->GetStateString() << std::endl;
+    std::cout   << label_ <<"\t"  
+                << panel_->GetPreviousFloor() << ", " << panel_->GetNextFloor() << "\t"
+                << height_ << "\t" << elevatorState_->GetStateString() << std::endl;
     std::cout << "CUR REQ: " <<  panel_->GetCurrentlyServicing().level << "\t" <<  panel_->GetCurrentlyServicing().direction << std::endl;
     std::cout << "Route: " << std::endl;
     panel_->DisplayRoute();

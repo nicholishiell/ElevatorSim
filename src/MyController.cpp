@@ -24,32 +24,25 @@ MyController::HandleFireAlarm(  const int level,
 
     for(auto elevator : elevators)
     {
-        auto currentLevel = elevator->GetPanel()->GetLevel();
-        
-        if(elevator->GetStateString() == "IDLE" && currentLevel != level)
+        auto panel = elevator->GetPanel();
+        elevator->Disable();
+
+        auto nearestLevel = panel->GetNearestLevel(elevator->GetHeight());
+
+        if(nearestLevel == level)
         {
-        
-            elevator->Disable();
-        }
-        else
-        {
-            auto targetLevel = elevator->GetPanel()->GetNearestLevel(elevator->GetHeight());
-            
-            auto emergencyServiceRequest = ServiceRequest();
-            if(targetLevel > elevator->GetPanel()->GetLevel())
+            if(panel->AtBottom())
             {
-                elevator->GetPanel()->SetLevel(targetLevel-1);
-                emergencyServiceRequest = ServiceRequest(targetLevel, RequestDirection::REQ_UP);
+                panel->GoToFloor(level+1);
             }
             else
             {
-                elevator->GetPanel()->SetLevel(targetLevel+1);
-                emergencyServiceRequest = ServiceRequest(targetLevel, RequestDirection::REQ_DOWN);
+                panel->GoToFloor(level-1);
             }
- 
-            elevator->GetPanel()->SetCurrentlyServicing(emergencyServiceRequest);
-        
-            elevator->Disable();            
+        }
+        else
+        {
+            panel->GoToFloor(nearestLevel);
         }
     }
 }
@@ -65,20 +58,17 @@ MyController::HandlePowerOutageAlarm(   ElevatorSharedPtrVector elevators,
 
     for(auto elevator : elevators)
     {
-        if(elevator->GetStateString() == "IDLE")
-        {
-            elevator->Disable();
-        }
-        else
-        {
-            auto targetLevel = std::max(elevator->GetPanel()->GetLevel() - 1, 0);
-            elevator->GetPanel()->SetLevel(targetLevel+1);
+        auto panel = elevator->GetPanel();
+        elevator->Disable();
 
-            auto emergencyServiceRequest = ServiceRequest(targetLevel, RequestDirection::REQ_DOWN);
-            elevator->GetPanel()->SetCurrentlyServicing(emergencyServiceRequest);
-            
-            elevator->Disable();            
+        if(panel->IsBetweenFloors())
+        {
+            auto targetFloor = std::min(panel->GetPreviousFloor(), panel->GetNextFloor());
+            auto emergencyRequest = ServiceRequest(targetFloor, RequestDirection::REQ_DOWN);
+
+            panel->SetCurrentlyServicing(emergencyRequest);
         }
+        
     }
 }
 
@@ -152,7 +142,7 @@ MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
                 continue;
 
             // Skip elevators that are already passed the request level
-            auto levelDiff = request.level - elevator->GetPanel()->GetLevel();
+            auto levelDiff = request.level - elevator->GetPanel()->GetPreviousFloor();
 
             if( (elevator->GetStateString() == "UP" && levelDiff < 0) ||
                 (elevator->GetStateString() == "DOWN" && levelDiff > 0) )

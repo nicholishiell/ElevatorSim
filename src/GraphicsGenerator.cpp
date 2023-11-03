@@ -137,7 +137,7 @@ GraphicsGenerator::drawElevatorOnFloor( const ElevatorSharedPtr elevator,
 {   
     QPixmap elevatorImage;
 
-    if(elevator->GetPanel()->GetLevel() == floorIndex && elevator->GetDoorState() == DoorState::OPEN)
+    if(elevator->GetPanel()->HasArrivedAtFloor(floorIndex) && elevator->GetDoorState() == DoorState::OPEN)
     {
         elevatorImage = QPixmap("./images/elevator/ElevatorOpen.png");
     }

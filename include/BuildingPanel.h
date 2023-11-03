@@ -27,10 +27,13 @@ private slots:
     
     void SoundFireAlarm(); 
     void SoundPowerOutageAlarm();
+    void EnabledPressed();
 
 signals:
 
     void EmergencyRequested(const EmergencyRequest request);
+
+    void EnableElevators();
 
 private:
 

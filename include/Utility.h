@@ -84,6 +84,24 @@ struct EmergencyRequest
     EmergencyType type;
 };
 
+struct FloorPosition
+{
+    FloorPosition()
+    {
+        prevFloor = 0;
+        nextFloor = 0;
+    }
+
+    FloorPosition(const int p, const int n)
+    {
+        prevFloor = p;
+        nextFloor = n;
+    }
+    
+    int prevFloor;
+    int nextFloor;
+};
+
 ///////////////////////////////////////////////////////////////////////////////////////
 // ALIAS'
 ///////////////////////////////////////////////////////////////////////////////////////

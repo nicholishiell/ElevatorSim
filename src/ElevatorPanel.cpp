@@ -105,6 +105,7 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
     numberOfFloors_ = numFloors;
     openDoor_ = false;
     closeDoor_ = false;
+    floorPos_ = FloorPosition(0,0);
 }
 
 ElevatorPanel::~ElevatorPanel()
@@ -112,24 +113,31 @@ ElevatorPanel::~ElevatorPanel()
 
 } 
 
-void 
-ElevatorPanel::SetLevel(const int level) 
+bool 
+ElevatorPanel::HasArrivedAtFloor(const int floor) const
 {
-    currentLevel_ = level;
-    this->DisplayMessage(int_to_string(currentLevel_));
+    return floorPos_.prevFloor == floor && floorPos_.nextFloor == floor;
+}
+
+bool 
+ElevatorPanel::ArrivedAtTargetFloor() const
+{
+    return this->HasArrivedAtFloor(currentlyServicing_.level);
 }
 
 void 
 ElevatorPanel::CalculateCurrentLevel(const float height)
 {
-    for(int i = 0; i < numberOfFloors_; i++)
+    floorPos_.nextFloor = std::ceil(height/float(FLOOR_HEIGHT_METERS));
+    
+    if( std::fabs(height - floorPos_.nextFloor*FLOOR_HEIGHT_METERS) < 0.01 )
     {
-        if( std::fabs(height - i*FLOOR_HEIGHT_METERS) < 0.01 )
-        {
-            SetLevel(i);
-        }
+        floorPos_.prevFloor = floorPos_.nextFloor;
     }
+
+    this->DisplayMessage(int_to_string(floorPos_.nextFloor));
 }
+
 int 
 ElevatorPanel::GetNearestLevel(const float height)
 {
@@ -150,6 +158,24 @@ ElevatorPanel::GetNearestLevel(const float height)
 }
 
 void 
+ElevatorPanel::GoToFloor(const int i)
+{
+    if(HasArrivedAtFloor(i))
+    {
+        currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_IDLE);
+    }
+    else if(i > floorPos_.prevFloor)
+    {
+        currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_UP);
+    }
+    else
+    {
+        currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_DOWN);
+    }
+
+}
+
+void 
 ElevatorPanel::AddToRoute(const ServiceRequest& request)
 {
     // Only add a level once to the route
@@ -167,7 +193,7 @@ ElevatorPanel::DisplayRoute() const
 void
 ElevatorPanel::PopRoute()
 {      
-    ServiceRequest nextRequest(currentLevel_, REQ_IDLE);
+    ServiceRequest nextRequest(floorPos_.prevFloor, REQ_IDLE);
 
     if(route_.size() > 0)
     {
@@ -262,10 +288,11 @@ ElevatorPanel::FloorButtonPresssed()
 
     auto currentDirection =  currentlyServicing_.direction;
 
-    if( requestedLevel > currentLevel_ && 
+    if( requestedLevel > floorPos_.prevFloor && 
         (currentDirection == RequestDirection::REQ_UP || currentDirection == RequestDirection::REQ_IDLE))
         route_.emplace_back(requestedLevel, RequestDirection::REQ_UP);
-    if( requestedLevel < currentLevel_ && 
+    
+    if( requestedLevel < floorPos_.prevFloor && 
         (currentDirection == RequestDirection::REQ_UP || currentDirection == RequestDirection::REQ_IDLE))
         route_.emplace_back(requestedLevel, RequestDirection::REQ_DOWN);   
 }
