@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <sstream>  
+#include <chrono>
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // FORWARD DECLARATIONS
@@ -35,7 +36,7 @@ enum LightState{ON,OFF, UNKNOWN};
 
 enum RequestDirection{REQ_UP, REQ_DOWN, REQ_IDLE};
 
-enum EmergencyType{FIRE, POWER_OUTAGE, HELP, BLANK};
+enum EmergencyType{FIRE, POWER_OUTAGE, BLANK};
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // STRUCTs
@@ -130,6 +131,8 @@ using PersonVector = std::vector<Person>;
 
 using GraphicsGeneratorSharedPtr = std::shared_ptr<GraphicsGenerator>;
 
+using TimeStamp = std::chrono::time_point<std::chrono::system_clock>;
+
 ///////////////////////////////////////////////////////////////////////////////////////
 // CONST
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -162,5 +165,7 @@ const float ELEVATOR_MAX_WEIGHT = 500.;
 
 const int MAX_NUMBER_OF_FLOORS = 6;
 const int MAX_NUMBER_OF_ELEVATORS = 4;
+
+const int64_t CALL_TIME_OUT  = 5;
 
 #endif

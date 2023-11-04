@@ -57,6 +57,9 @@ public slots:
     void HandleEmergencyRequest(const EmergencyRequest request);
     
     void HandleEnableElevators();
+
+    void HandleHelpRequest(ElevatorPanelSharedPtr panel);
+    void HandleAnswerHelp(ElevatorPanelSharedPtr panel);
     
 private:
    

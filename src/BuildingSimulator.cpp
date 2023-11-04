@@ -59,6 +59,7 @@ BuildingSimulator::Initialize()
     buildingPanel_ = std::make_shared<BuildingPanel>(this->GetNumberOfFloors()); 
     QObject::connect(buildingPanel_.get(),&BuildingPanel::EmergencyRequested,this,&BuildingSimulator::HandleEmergencyRequest);  
     QObject::connect(buildingPanel_.get(),&BuildingPanel::EnableElevators,this,&BuildingSimulator::HandleEnableElevators);
+    QObject::connect(buildingPanel_.get(),&BuildingPanel::AnswerHelpRequest,this,&BuildingSimulator::HandleAnswerHelp);
 
     for(auto& floor : floors_)
     {
@@ -76,7 +77,7 @@ BuildingSimulator::Initialize()
                                                         this->GetNumberOfFloors());
                                                         
         QObject::connect(panel.get(), &ElevatorPanel::ServiceRequested, this, &BuildingSimulator::HandleServiceRequest);
-        QObject::connect(panel.get(), &ElevatorPanel::EmergencyRequested, this, &BuildingSimulator::HandleEmergencyRequest);
+        QObject::connect(panel.get(), &ElevatorPanel::HelpRequested, this, &BuildingSimulator::HandleHelpRequest);
 
         elevator->SetPanel(panel);
     }
@@ -102,6 +103,17 @@ BuildingSimulator::HandleEnableElevators()
         elevator->Enable();
 }
 
+void 
+BuildingSimulator::HandleHelpRequest(ElevatorPanelSharedPtr panel)
+{
+    controller_->HandleHelpRequest(panel, buildingPanel_);
+}
+
+void 
+BuildingSimulator::HandleAnswerHelp(ElevatorPanelSharedPtr panel)
+{
+    controller_->HandleAnswerHelp(panel);
+}
 
 void
 BuildingSimulator::HandleEmergencyRequest(const EmergencyRequest request)
@@ -113,10 +125,6 @@ BuildingSimulator::HandleEmergencyRequest(const EmergencyRequest request)
     else if(request.type == EmergencyType::POWER_OUTAGE)
     {
         controller_->HandlePowerOutageAlarm(elevators_, floors_);
-    }
-    else if(request.type == EmergencyType::HELP)
-    {
-        controller_->HandleHelpRequest(request.level);
     }
     else
     {
@@ -138,7 +146,7 @@ BuildingSimulator::Update(const float timeStep)
     this->updatePeople(timeStep);
 
     // Let the user defined controller do any periodic work it needs to do
-    controller_->Step(timeStep, elevators_, floors_);
+    controller_->Step(timeStep, elevators_, buildingPanel_);
 
     // Notify the graphics generator that things have changed.
     if(graphicsObserver_ != nullptr)

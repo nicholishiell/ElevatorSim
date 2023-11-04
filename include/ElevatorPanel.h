@@ -12,7 +12,7 @@
 #include "include/Utility.h"
 #include "include/AnimatedImage.h"
 
-class ElevatorPanel : public QWidget
+class ElevatorPanel : public QWidget, public std::enable_shared_from_this<ElevatorPanel>
 {
     Q_OBJECT
 
@@ -40,11 +40,14 @@ public:
     int GetPreviousFloor() const {return floorPos_.prevFloor;}
     int GetNextFloor() const {return floorPos_.nextFloor;}
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // This functionality could all be moved into a "FloorSensor" object
     bool HasArrivedAtFloor(const int floor) const;
     bool ArrivedAtTargetFloor() const;
     bool IsBetweenFloors() const {return floorPos_.nextFloor != floorPos_.prevFloor;}
     bool AtTop() const {return HasArrivedAtFloor(numberOfFloors_);}
     bool AtBottom() const {return HasArrivedAtFloor(0);}
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     void CalculateCurrentLevel(const float height);
     
@@ -78,7 +81,7 @@ private slots:
 
 signals:
 
-    void EmergencyRequested(const EmergencyRequest& request);
+    void HelpRequested(ElevatorPanelSharedPtr panel);
     
     void ServiceRequested(const ServiceRequest& request);
 
@@ -99,6 +102,8 @@ private:
     ServiceRequest currentlyServicing_;
     FloorPosition floorPos_;
     int numberOfFloors_;
+
+    std::string label_;
 };
 
 #endif

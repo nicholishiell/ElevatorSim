@@ -28,7 +28,7 @@ public:
 
     virtual void Step(  const float timeStep, 
                         ElevatorSharedPtrVector elevators,
-                        FloorSharedPtrVector floors) = 0;
+                        BuildingPanelSharedPtr buildingPanel) = 0;
     
     virtual void HandleServiceRequest(  const ServiceRequest request, 
                                         ElevatorSharedPtrVector elevators,
@@ -41,7 +41,11 @@ public:
     virtual void HandlePowerOutageAlarm(ElevatorSharedPtrVector elevators,
                                         FloorSharedPtrVector floors) = 0;
     
-    virtual void HandleHelpRequest(const int level) = 0;
+    virtual void HandleHelpRequest( ElevatorPanelSharedPtr elevatorPanel,
+                                    BuildingPanelSharedPtr buildingPanel) = 0;
+    
+    virtual void HandleAnswerHelp( ElevatorPanelSharedPtr elevatorPanel) = 0;
+
 };
 
 #endif

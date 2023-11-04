@@ -106,6 +106,7 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
     openDoor_ = false;
     closeDoor_ = false;
     floorPos_ = FloorPosition(0,0);
+    label_ = label;
 }
 
 ElevatorPanel::~ElevatorPanel()
@@ -276,7 +277,7 @@ ElevatorPanel::CloseButtonInteraction()
 void 
 ElevatorPanel::HelpButtonPresssed()
 {
-
+    emit(HelpRequested(shared_from_this()));
 }
 
 void 

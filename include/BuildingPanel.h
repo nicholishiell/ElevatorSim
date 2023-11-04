@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QComboBox>
+#include <QLabel>
 
 #include <iostream>
 
@@ -22,12 +23,20 @@ public:
     bool IsFireAlarmActive() const {return isFireAlarmActive_;}
     
     bool IsPowerOutageAlarmActive() const {return isPowerOutageAlarmActive_;}
+
+    ElevatorPanelSharedPtr GetCallingPanel() const {return callingPanel_;}
+    void EndCall();
    
 private slots:
     
     void SoundFireAlarm(); 
     void SoundPowerOutageAlarm();
     void EnabledPressed();
+    void HandleAnswerPressed();
+
+public slots:
+
+    void HelpRequested(ElevatorPanelSharedPtr panel);
 
 signals:
 
@@ -35,12 +44,18 @@ signals:
 
     void EnableElevators();
 
+    void AnswerHelpRequest(ElevatorPanelSharedPtr panel);
+
 private:
 
-    QComboBox* floorSelector;
-
+    QComboBox* floorSelector_;
+    
+    QLabel* callLabel_;
+    
     bool isFireAlarmActive_ = false;
     bool isPowerOutageAlarmActive_ = false;
+
+    ElevatorPanelSharedPtr callingPanel_;
 };
 
 #endif

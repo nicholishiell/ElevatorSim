@@ -3,8 +3,7 @@
 
 MyController::MyController() : Controller()
 {
-
-
+    helpRequested_ = false;
 }
 
 MyController::~MyController()
@@ -90,23 +89,42 @@ MyController::HandleServiceRequest( const ServiceRequest request,
 }
 
 void
-MyController::HandleHelpRequest(const int level)
+MyController::HandleHelpRequest(ElevatorPanelSharedPtr elevatorPanel,
+                                BuildingPanelSharedPtr buildingPanel)
 {
-    std::cout << "Help requested on floor: " << level << std::endl;
+    buildingPanel->HelpRequested(elevatorPanel);
+    calledTimeStamp_ = std::chrono::system_clock::now();
+    helpRequested_ = true;
+}
+
+void 
+MyController::HandleAnswerHelp(ElevatorPanelSharedPtr elevatorPanel)
+{
+    elevatorPanel->AudioMessage();
+    elevatorPanel->DisplayMessage("Building Safety Service");
+    helpRequested_ = false;
 }
 
 void 
 MyController::Step( const float timeStep,
                     ElevatorSharedPtrVector elevators,
-                    FloorSharedPtrVector floors)
+                    BuildingPanelSharedPtr buildingPanel)
 {
     this->assignServiceRequests(elevators);
     
-    if(timeStep < 0)
-        std::cout << "Invalid time step" << std::endl;
-
-    for(auto floor : floors)
+    // Check if call timed out
+    if(helpRequested_)
     {
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now()-calledTimeStamp_).count();
+
+        if(elapsedTime > CALL_TIME_OUT)
+        {
+            auto elevatorPanel = buildingPanel->GetCallingPanel();
+            elevatorPanel->AudioMessage();
+            elevatorPanel->DisplayMessage("911 Operator");
+            helpRequested_ = false;
+            buildingPanel->EndCall();  
+        }
     }
 }
 

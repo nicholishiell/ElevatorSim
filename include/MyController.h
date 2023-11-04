@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <cmath>
+#include <chrono>
 
 #include "include/Controller.h"
 
@@ -21,7 +22,7 @@ public:
     // Concrete definition 
     void Step(  const float timeStep, 
                 ElevatorSharedPtrVector elevators,
-                FloorSharedPtrVector floors);
+                BuildingPanelSharedPtr buildingPanel);
     
     // Concrete definition 
     void HandleServiceRequest(  const ServiceRequest request, 
@@ -38,11 +39,18 @@ public:
                                 FloorSharedPtrVector floors);
 
     // Concrete definition 
-    void HandleHelpRequest(const int level);
+    void HandleHelpRequest( ElevatorPanelSharedPtr elevatorPanel,
+                            BuildingPanelSharedPtr buildingPanel);
+    
+    // Concrete definition 
+    void HandleAnswerHelp(ElevatorPanelSharedPtr elevatorPanel);
 
 private:
 
     ServiceRequestVector pendingRequests_;
+
+    TimeStamp calledTimeStamp_;
+    bool helpRequested_;
 
     void assignServiceRequests( ElevatorSharedPtrVector elevators);
 };

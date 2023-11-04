@@ -2,6 +2,7 @@
 
 #include <QGridLayout>
 #include <QPushButton>
+#include <QLabel>
 
 BuildingPanel::BuildingPanel(   const int numFloors,
                                 QWidget *parent): QWidget(parent)
@@ -10,24 +11,33 @@ BuildingPanel::BuildingPanel(   const int numFloors,
     auto fireButton = new QPushButton("FIRE", this);
     auto powerOutageButton = new QPushButton("PW Out", this);
     auto enableButton = new QPushButton("ENABLE", this);
-    floorSelector = new QComboBox();
+    auto obstructorButton = new QPushButton("OBST FLR", this);
+    auto answerButton = new QPushButton("ANSWER", this);
+    callLabel_ = new QLabel("CALL INCOMING",this);
+    floorSelector_ = new QComboBox();
 
     gridLayout->addWidget(fireButton,0,0);
-    gridLayout->addWidget(powerOutageButton,0,1);
-    gridLayout->addWidget(enableButton,1,0,1,2);
-    gridLayout->addWidget(floorSelector,2,0,1,2);
+    gridLayout->addWidget(answerButton,0,1);
+    gridLayout->addWidget(powerOutageButton,1,0);
+    gridLayout->addWidget(obstructorButton,1,1);
+    gridLayout->addWidget(enableButton,2,0,1,2);
+    gridLayout->addWidget(floorSelector_,3,0,1,2);
+    gridLayout->addWidget(callLabel_,4,0,1,2,Qt::AlignHCenter);
 
     QObject::connect(fireButton, &QPushButton::clicked, this, &BuildingPanel::SoundFireAlarm);
     QObject::connect(powerOutageButton, &QPushButton::clicked, this, &BuildingPanel::SoundPowerOutageAlarm);
     QObject::connect(enableButton, &QPushButton::clicked, this, &BuildingPanel::EnabledPressed);
+    QObject::connect(answerButton, &QPushButton::clicked, this, &BuildingPanel::HandleAnswerPressed);
 
     for(int i = 0; i < numFloors; i++)
-        floorSelector->addItem(QString::number(i));
+        floorSelector_->addItem(QString::number(i));
 
     this->setLayout(gridLayout);
     this->setWindowTitle(QString::fromStdString("Building Panel"));
 
     this->show();
+
+    callingPanel_ = nullptr;
 }
 
 BuildingPanel::~BuildingPanel()
@@ -44,7 +54,7 @@ BuildingPanel::SoundFireAlarm()
     }
     else
     {
-        emit (EmergencyRequested(EmergencyRequest(floorSelector->currentIndex(),EmergencyType::FIRE)));
+        emit (EmergencyRequested(EmergencyRequest(floorSelector_->currentIndex(),EmergencyType::FIRE)));
         isFireAlarmActive_ = true;
     }
 }
@@ -66,4 +76,33 @@ void
 BuildingPanel::EnabledPressed()
 {
     emit(EnableElevators());
+}
+
+void 
+BuildingPanel::HelpRequested(ElevatorPanelSharedPtr panel)
+{
+    callingPanel_ = panel;
+    callLabel_->setStyleSheet("QLabel { background-color : red; color : black; }");
+          
+    callLabel_->repaint();
+}
+
+void 
+BuildingPanel::HandleAnswerPressed()
+{
+    if(callingPanel_ != nullptr)
+    {
+        emit(AnswerHelpRequest(callingPanel_));
+
+        EndCall();
+    }
+}
+
+void
+BuildingPanel::EndCall()
+{
+    callLabel_->setStyleSheet("QLabel { background-color : lightGray; color : black; }");
+    callLabel_->repaint();  
+
+    callingPanel_ = nullptr;
 }
