@@ -60,7 +60,7 @@ ElevatorStateUp::Update(ElevatorSharedPtr elevator,
 
     auto panel = elevator->GetPanel();
 
-    if(panel->ArrivedAtTargetFloor())
+    if(panel->IsAtTargetFloor())
     {
         return new ElevatorStateArrived();
     }
@@ -89,7 +89,7 @@ ElevatorStateDown::Update(  ElevatorSharedPtr elevator,
         elevator->SetHeight(0.);
     }
 
-    if(panel->ArrivedAtTargetFloor())
+    if(panel->IsAtTargetFloor())
     {
         return new ElevatorStateArrived();
     }
@@ -146,7 +146,7 @@ ElevatorStateDisabled::Update(  ElevatorSharedPtr elevator,
     panel->RingBell();
     panel->DisplayMessage("!!!EMERGENCY!!!");
 
-    if(!panel->ArrivedAtTargetFloor())
+    if(!panel->IsAtTargetFloor())
     {
         auto delta = 0.f;
         if(panel->IsGoingDown())

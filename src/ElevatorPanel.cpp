@@ -21,6 +21,7 @@ int_to_string(const int i)
 
 ElevatorPanel::ElevatorPanel(   const std::string label, 
                                 const int numFloors,
+                                ElevatorPositionSensorSharedPtr floorSensor,
                                 QWidget *parent) : QWidget(parent)
 {
     // Create all the compulsory buttons
@@ -102,11 +103,12 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
 
     this->show();
 
-    numberOfFloors_ = numFloors;
     openDoor_ = false;
     closeDoor_ = false;
-    floorPos_ = FloorPosition(0,0);
+ 
     label_ = label;
+
+    floorSensor_ = floorSensor;
 }
 
 ElevatorPanel::~ElevatorPanel()
@@ -114,58 +116,27 @@ ElevatorPanel::~ElevatorPanel()
 
 } 
 
-bool 
-ElevatorPanel::HasArrivedAtFloor(const int floor) const
+std::string 
+ElevatorPanel::FloorPosString() const
 {
-    return floorPos_.prevFloor == floor && floorPos_.nextFloor == floor;
+    return std::string( std::to_string(GetPreviousFloor()) + ", " +
+                        std::to_string(GetNextFloor()));
 }
 
 bool 
-ElevatorPanel::ArrivedAtTargetFloor() const
+ElevatorPanel::IsAtTargetFloor() const
 {
-    return this->HasArrivedAtFloor(currentlyServicing_.level);
-}
-
-void 
-ElevatorPanel::CalculateCurrentLevel(const float height)
-{
-    floorPos_.nextFloor = std::ceil(height/float(FLOOR_HEIGHT_METERS));
-    
-    if( std::fabs(height - floorPos_.nextFloor*FLOOR_HEIGHT_METERS) < 0.01 )
-    {
-        floorPos_.prevFloor = floorPos_.nextFloor;
-    }
-
-    this->DisplayMessage(int_to_string(floorPos_.nextFloor));
-}
-
-int 
-ElevatorPanel::GetNearestLevel(const float height)
-{
-    auto nearestLevel = 0;
-    float currentMin = std::numeric_limits<float>::max();
-
-    for(int i = 0; i < numberOfFloors_; i++)
-    {
-        auto diff = height - i*FLOOR_HEIGHT_METERS;
-        if(height - i*FLOOR_HEIGHT_METERS < currentMin)
-        {
-            nearestLevel = i;
-            currentMin = diff;
-        }
-    } 
-
-    return nearestLevel;
+    return floorSensor_->HasArrivedAtFloor(currentlyServicing_.level);
 }
 
 void 
 ElevatorPanel::GoToFloor(const int i)
 {
-    if(HasArrivedAtFloor(i))
+    if(floorSensor_->HasArrivedAtFloor(i))
     {
         currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_IDLE);
     }
-    else if(i > floorPos_.prevFloor)
+    else if(i > GetPreviousFloor())
     {
         currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_UP);
     }
@@ -191,10 +162,11 @@ ElevatorPanel::DisplayRoute() const
         std::cout << "(" << r.level << ", " << r.direction << ") ";
     std::cout << std::endl;
 }
+
 void
 ElevatorPanel::PopRoute()
 {      
-    ServiceRequest nextRequest(floorPos_.prevFloor, REQ_IDLE);
+    ServiceRequest nextRequest(GetPreviousFloor(), REQ_IDLE);
 
     if(route_.size() > 0)
     {
@@ -280,6 +252,18 @@ ElevatorPanel::HelpButtonPresssed()
     emit(HelpRequested(shared_from_this()));
 }
 
+int
+ElevatorPanel::GetPreviousFloor() const
+{
+    return floorSensor_->GetFloorPosition().prevFloor;
+}
+
+int 
+ElevatorPanel::GetNextFloor() const
+{
+    return floorSensor_->GetFloorPosition().nextFloor;
+}
+
 void 
 ElevatorPanel::FloorButtonPresssed()
 {
@@ -289,11 +273,23 @@ ElevatorPanel::FloorButtonPresssed()
 
     auto currentDirection =  currentlyServicing_.direction;
 
-    if( requestedLevel > floorPos_.prevFloor && 
+    if( requestedLevel > GetPreviousFloor() && 
         (currentDirection == RequestDirection::REQ_UP || currentDirection == RequestDirection::REQ_IDLE))
         route_.emplace_back(requestedLevel, RequestDirection::REQ_UP);
     
-    if( requestedLevel < floorPos_.prevFloor && 
+    if( requestedLevel < GetPreviousFloor() && 
         (currentDirection == RequestDirection::REQ_UP || currentDirection == RequestDirection::REQ_IDLE))
         route_.emplace_back(requestedLevel, RequestDirection::REQ_DOWN);   
+}
+
+ void 
+ ElevatorPanel::Notify()
+ {
+    this->DisplayMessage(std::to_string(GetPreviousFloor()));
+ }
+
+bool
+ElevatorPanel::IsAtFloor(const int floorIndex) const
+{
+return floorSensor_->HasArrivedAtFloor(floorIndex);
 }

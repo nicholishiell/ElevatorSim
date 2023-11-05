@@ -11,14 +11,17 @@
 
 #include "include/Utility.h"
 #include "include/AnimatedImage.h"
+#include "include/ElevatorPositionSensor.h"
+#include "include/Observer.h"
 
-class ElevatorPanel : public QWidget, public std::enable_shared_from_this<ElevatorPanel>
+class ElevatorPanel : public QWidget, public std::enable_shared_from_this<ElevatorPanel>, public Observer
 {
     Q_OBJECT
 
 public:
     ElevatorPanel(  const std::string label, 
                     const int numFloors,
+                    ElevatorPositionSensorSharedPtr floorSensor,
                     QWidget *parent = nullptr); 
                     
     virtual ~ElevatorPanel();   
@@ -37,38 +40,32 @@ public:
     // All these functions relate to operationing the elevator
     ServiceRequestVector PopRequests();
    
-    int GetPreviousFloor() const {return floorPos_.prevFloor;}
-    int GetNextFloor() const {return floorPos_.nextFloor;}
-
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // This functionality could all be moved into a "FloorSensor" object
-    bool HasArrivedAtFloor(const int floor) const;
-    bool ArrivedAtTargetFloor() const;
-    bool IsBetweenFloors() const {return floorPos_.nextFloor != floorPos_.prevFloor;}
-    bool AtTop() const {return HasArrivedAtFloor(numberOfFloors_);}
-    bool AtBottom() const {return HasArrivedAtFloor(0);}
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    void CalculateCurrentLevel(const float height);
-    
-    int GetNumberOfFloors() const {return numberOfFloors_;}
-    
-    int GetNearestLevel(const float height);
+    bool IsAtTargetFloor() const;
+    int GetPreviousFloor() const;
+    int GetNextFloor() const;
 
     ServiceRequest GetCurrentlyServicing() const {return currentlyServicing_;}
     bool IsGoingDown() const {return currentlyServicing_.direction == RequestDirection::REQ_DOWN;}
 
     void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
     void GoToFloor(const int i);
-        
+
+    bool IsAtFloor(const int floorIndex) const;
+
     bool IsOpenDoorButtionActive() const {return openDoor_;}
     bool IsCloseDoorButtionActive() const {return closeDoor_;}
+
+    std::string FloorPosString() const;
 
     // Functions used to add routes to the elevator  
     void AddToRoute(const ServiceRequest& request);
     bool IsRouteEmpty() const {return route_.empty();}
     void DisplayRoute() const;
     void PopRoute();
+
+    ElevatorPositionSensorSharedPtr GetSensor() const {return floorSensor_;}
+
+    void Notify();
 
 private slots:
 
@@ -100,10 +97,10 @@ private:
 
     ServiceRequestVector route_;
     ServiceRequest currentlyServicing_;
-    FloorPosition floorPos_;
-    int numberOfFloors_;
-
+    
     std::string label_;
+
+    ElevatorPositionSensorSharedPtr floorSensor_;
 };
 
 #endif

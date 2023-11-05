@@ -14,6 +14,7 @@
 class Elevator;
 class ElevatorPanel;
 class ElevatorState;
+class ElevatorPositionSensor;
 
 class Floor;
 class FloorPanel;
@@ -116,6 +117,8 @@ using ElevatorPanelSharedPtr = std::shared_ptr<ElevatorPanel>;
 using ElevatorPanelSharedPtrVector = std::vector<ElevatorPanelSharedPtr>;
 
 using ElevatorStateUniquePtr = std::unique_ptr<ElevatorState>;
+
+using ElevatorPositionSensorSharedPtr = std::shared_ptr<ElevatorPositionSensor>;
 
 using FloorSharedPtr = std::shared_ptr<Floor>;
 using FloorSharedPtrVector = std::vector<FloorSharedPtr>;

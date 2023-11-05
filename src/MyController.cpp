@@ -26,11 +26,11 @@ MyController::HandleFireAlarm(  const int level,
         auto panel = elevator->GetPanel();
         elevator->Disable();
 
-        auto nearestLevel = panel->GetNearestLevel(elevator->GetHeight());
+        auto nearestLevel = panel->GetSensor()->GetNearestLevel();
 
         if(nearestLevel == level)
         {
-            if(panel->AtBottom())
+            if(panel->GetSensor()->AtBottom())
             {
                 panel->GoToFloor(level+1);
             }
@@ -60,7 +60,7 @@ MyController::HandlePowerOutageAlarm(   ElevatorSharedPtrVector elevators,
         auto panel = elevator->GetPanel();
         elevator->Disable();
 
-        if(panel->IsBetweenFloors())
+        if(panel->GetSensor()->IsBetweenFloors())
         {
             auto targetFloor = std::min(panel->GetPreviousFloor(), panel->GetNextFloor());
             auto emergencyRequest = ServiceRequest(targetFloor, RequestDirection::REQ_DOWN);

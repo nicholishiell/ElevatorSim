@@ -47,7 +47,19 @@ Elevator::Update(const float timeStep)
         delete(elevatorState_);
         elevatorState_ = nextState;
     }
-    
+}
+
+bool 
+Elevator::IsAtFloor(const int floorIndex) const
+{
+    return panel_->IsAtFloor(floorIndex);
+}
+
+void 
+Elevator::notifyObservers()
+{
+    for(auto observer : observers_)
+        observer->Notify();
 }
 
 void 
@@ -55,7 +67,7 @@ Elevator::ToConsole() const
 {
     // Display info to the console
     std::cout   << label_ <<"\t"  
-                << panel_->GetPreviousFloor() << ", " << panel_->GetNextFloor() << "\t"
+                << panel_->FloorPosString() << "\t"
                 << height_ << "\t" << elevatorState_->GetStateString() << std::endl;
     std::cout << "CUR REQ: " <<  panel_->GetCurrentlyServicing().level << "\t" <<  panel_->GetCurrentlyServicing().direction << std::endl;
     std::cout << "Route: " << std::endl;
@@ -67,7 +79,9 @@ void
 Elevator::UpdateHeight(const float deltaH)
 {
     auto updatedHeight = height_ + deltaH;
-    auto maxHeight = float(panel_->GetNumberOfFloors())*FLOOR_HEIGHT_METERS;
+    
+    // TODO: Figure out how to calculate this better
+    auto maxHeight = 4.*FLOOR_HEIGHT_METERS;
 
     if(updatedHeight > 0. && updatedHeight <= maxHeight)
     {
@@ -81,13 +95,14 @@ Elevator::UpdateHeight(const float deltaH)
     {
         SetHeight(0.);
     }
+
+    notifyObservers();
 }
 
 void 
 Elevator::SetHeight(const float height)
 {
     height_ = height;
-    panel_->CalculateCurrentLevel(height_);
 }
 
 std::string 
@@ -100,7 +115,6 @@ void
 Elevator::SetPanel(ElevatorPanelSharedPtr panel)
 {
     panel_ = panel;
-    panel_->CalculateCurrentLevel(height_);
 }
 
 bool 

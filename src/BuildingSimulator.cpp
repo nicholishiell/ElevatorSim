@@ -73,13 +73,19 @@ BuildingSimulator::Initialize()
 
     for(auto& elevator : elevators_)
     {
+        auto sensor = std::make_shared<ElevatorPositionSensor>(this->GetNumberOfFloors(),
+                                                               elevator);
+
         auto panel = std::make_shared<ElevatorPanel>(   elevator->GetLabel(),
-                                                        this->GetNumberOfFloors());
+                                                        this->GetNumberOfFloors(),
+                                                        sensor);
                                                         
         QObject::connect(panel.get(), &ElevatorPanel::ServiceRequested, this, &BuildingSimulator::HandleServiceRequest);
         QObject::connect(panel.get(), &ElevatorPanel::HelpRequested, this, &BuildingSimulator::HandleHelpRequest);
 
         elevator->SetPanel(panel);
+        elevator->AddObserver(panel.get());
+        elevator->AddObserver(sensor.get());
     }
 
     initialized_ = true;

@@ -5,11 +5,13 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 
 #include "include/Utility.h"
 #include "include/Person.h"
 #include "include/ElevatorPanel.h"
 #include "include/ElevatorState.h"
+#include "include/Observer.h"
 
 class Elevator : public QObject, public std::enable_shared_from_this<Elevator>
 {
@@ -37,15 +39,16 @@ public:
     // Updates the state and position of the elevator
     void Update(const float timeStep);
 
-    void UpdateCurrentLevel();
-
-    ServiceRequest PopRoute();
-
     void ToConsole() const;
 
     // Used in case of emergencies.
     void Disable();
     void Enable();
+
+    void AddObserver(Observer * obs){observers_.push_back(obs);}
+    void RemoveObserver(Observer * obs){observers_.remove(obs);}
+
+    bool IsAtFloor(const int floorIndex) const;
 
  private:
 
@@ -55,6 +58,8 @@ public:
     bool checkOverloaded();
 
     bool checkDoorObstructed();
+
+    void notifyObservers();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // People currently on the elvators
@@ -76,6 +81,8 @@ public:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // other private members
     std::string label_;
+
+    std::list<Observer*> observers_;
 };
 
 
