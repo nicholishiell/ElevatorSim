@@ -55,6 +55,8 @@ public:
     void RemovePerson(PersonSharedPtr p);
     u_int GetNumberOfPeople() const {return peopleOnboard_.size();}
 
+    bool CheckOverloaded();
+
 public slots:
     
     void HandleDoorObstructed(const int floorIndex);
@@ -64,15 +66,12 @@ public slots:
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Private methods
 
-    bool checkOverloaded();
-
     bool checkDoorObstructed();
-
     void notifyObservers();
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // People currently on the elvators
-    PersonSharedPtrVector passengers_;
+    PersonSharedPtrVector peopleOnboard_;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Panel that controls the elevator
@@ -86,8 +85,6 @@ public slots:
     DoorState doorState_;
   
     float height_;
-
-    PersonSharedPtrVector peopleOnboard_;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // other private members

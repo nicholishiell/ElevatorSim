@@ -56,7 +56,7 @@ ElevatorPositionSensor::calculateCurrentLevel()
 
     floorPos_.nextFloor = std::ceil(height/float(FLOOR_HEIGHT_METERS));
     
-    if( std::fabs(height - floorPos_.nextFloor*FLOOR_HEIGHT_METERS) < 0.01 )
+    if( std::fabs(height - floorPos_.nextFloor*FLOOR_HEIGHT_METERS) < 0.05)
     {
         floorPos_.prevFloor = floorPos_.nextFloor;
     }

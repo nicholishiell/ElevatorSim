@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <limits>
+#include <algorithm>
 
 #include <QGridLayout>
 #include <QPixmap>
@@ -113,10 +114,46 @@ ElevatorPanel::FloorPosString() const
                         std::to_string(GetNextFloor()));
 }
 
+ServiceRequest 
+ElevatorPanel::GetCurrentlyServicing() const 
+{
+    ServiceRequest currentlyServicing(this->GetPreviousFloor(), RequestDirection::REQ_IDLE);
+
+    if(!route_.empty())
+        currentlyServicing = route_[0];
+
+    return currentlyServicing;
+}
+    
+bool 
+ElevatorPanel::IsGoingUp() const 
+{
+    auto currentlyServicing = this->GetCurrentlyServicing();
+
+    return  currentlyServicing.direction == RequestDirection::REQ_UP || 
+            currentlyServicing.direction == RequestDirection::REQ_IDLE;
+}
+
+bool 
+ElevatorPanel::IsGoingDown() const 
+{
+    auto currentlyServicing = this->GetCurrentlyServicing();
+
+    return  currentlyServicing.direction == RequestDirection::REQ_DOWN || 
+            currentlyServicing.direction == RequestDirection::REQ_IDLE;
+}
+
+
+void 
+ElevatorPanel::SetCurrentlyServicing(const ServiceRequest& r) 
+{
+    route_.insert(route_.begin(), r);
+}
+
 bool 
 ElevatorPanel::IsAtTargetFloor() const
 {
-    return floorSensor_->HasArrivedAtFloor(currentlyServicing_.level);
+    return floorSensor_->HasArrivedAtFloor(this->GetCurrentlyServicing().level);
 }
 
 void 
@@ -124,15 +161,15 @@ ElevatorPanel::GoToFloor(const int i)
 {
     if(floorSensor_->HasArrivedAtFloor(i))
     {
-        currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_IDLE);
+        this->SetCurrentlyServicing(ServiceRequest(i, RequestDirection::REQ_IDLE));
     }
     else if(i > GetPreviousFloor())
     {
-        currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_UP);
+        this->SetCurrentlyServicing(ServiceRequest(i, RequestDirection::REQ_UP));
     }
     else
     {
-        currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_DOWN);
+        this->SetCurrentlyServicing(ServiceRequest(i, RequestDirection::REQ_DOWN));
     }
 
 }
@@ -143,21 +180,6 @@ ElevatorPanel::DisplayRoute() const
     for(auto r : route_)
         std::cout << "(" << r.level << ", " << r.direction << ") ";
     std::cout << std::endl;
-}
-
-void
-ElevatorPanel::PopRoute()
-{      
-    ServiceRequest nextRequest(GetPreviousFloor(), REQ_IDLE);
-
-    if(route_.size() > 0)
-    {
-        nextRequest = route_[0];
-        route_.front() = std::move(route_.back());
-        route_.pop_back();
-    }
-
-    currentlyServicing_ = nextRequest;
 }
 
 void 
@@ -249,8 +271,6 @@ ElevatorPanel::GetNextFloor() const
 void 
 ElevatorPanel::ServiceFloorButtonRequest(const int destinationFloor)
 {
-    std::cout << "ElevatorPanel::ServiceFloorButtonRequest" << std::endl;
-
     ServiceRequest request(destinationFloor, RequestDirection::REQ_IDLE);
     
     if(destinationFloor > GetPreviousFloor())
@@ -268,42 +288,35 @@ ElevatorPanel::AddToRoute(const ServiceRequest& request)
     // Only add a level once to the route
     if(std::find_if(route_.begin(), route_.end(), special_compare(request)) == route_.end())  
     {
-        if(request.direction == currentlyServicing_.direction || 
-            currentlyServicing_.direction == RequestDirection::REQ_IDLE)
+        auto currentlyServicing = this->GetCurrentlyServicing();
+
+        if(request.direction == currentlyServicing.direction || 
+            currentlyServicing.direction == RequestDirection::REQ_IDLE)
         {
             this->addRequest(request);
         }
-        else
-        {
-           std::cout << "ElevatorPanel::AddToRoute: request in wrong direction" << std::endl; 
-        }
-    }
-    else
-    {
-        std::cout << "ElevatorPanel::AddToRoute: request already in route" << std::endl;
     }
 }
 
 void 
 ElevatorPanel::addRequest(const ServiceRequest& request)
 {
-    std::cout << "ElevatorPanel::addRequest: " << std::endl;
+    auto isGoingUp = this->IsGoingUp();
 
-    if(currentlyServicing_.direction != RequestDirection::REQ_IDLE)
-        route_.insert(route_.begin(), currentlyServicing_);
+    route_.emplace_back(request);
+    std::sort(route_.begin(), route_.end());
 
-    for(uint iRequest = 0; iRequest < route_.size(); iRequest++)
+    if(!isGoingUp)
+        std::reverse(route_.begin(),route_.end()); 
+}
+
+void 
+ElevatorPanel::Arrived()
+{
+    if(!this->IsRouteEmpty())
     {
-        auto r = route_[iRequest];
-        if( (this->IsGoingUp() && r.level > request.level) ||
-            (this->IsGoingDown() && r.level < request.level) )
-        {
-            route_.insert(route_.begin()+iRequest, request);
-        }
-    }
-
-    if(route_.empty())
-        route_.emplace_back(request);
+        route_.erase(route_.begin());
+    }  
 }
 
 void 

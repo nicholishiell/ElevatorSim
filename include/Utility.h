@@ -56,6 +56,11 @@ struct ServiceRequest
         direction = d;
     }
 
+    bool operator<(const ServiceRequest& a) const
+    {
+        return level < a.level;
+    }
+
     int level;
     RequestDirection direction;
 };
@@ -169,7 +174,7 @@ const std::string FLOOR_SIGN_FILE_NAMES[7] = {  "Floor_00.png",
 const float FLOOR_HEIGHT_METERS = 2.;
 const float ELEVATOR_SPEED = 0.5;
 const float ELEVATOR_WAIT_TIME = 3.;
-const float ELEVATOR_MAX_WEIGHT = 500.;
+const float ELEVATOR_MAX_WEIGHT = 200.;
 
 const int MAX_NUMBER_OF_FLOORS = 6;
 const int MAX_NUMBER_OF_ELEVATORS = 4;

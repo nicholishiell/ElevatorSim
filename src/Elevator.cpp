@@ -138,16 +138,22 @@ Elevator::SetPanel(ElevatorPanelSharedPtr panel)
 }
 
 bool 
-Elevator::checkOverloaded()
+Elevator::CheckOverloaded()
 {
     float currentWeight = 0.;
-    for(auto person : passengers_)
+    for(auto person : peopleOnboard_)
+    {
         currentWeight = currentWeight + person->GetWeight();
+    }
 
     auto overloaded = currentWeight > ELEVATOR_MAX_WEIGHT;
 
     if(overloaded)
+    {
         panel_->SetOverloadState(overloaded);
+        panel_->DisplayMessage("!!! OVERLOADED !!!");
+        panel_->AudioMessage();
+    }
 
     return overloaded;
 }
@@ -179,7 +185,6 @@ Elevator::OpenDoor()
 void 
 Elevator::CloseDoor()
 {
-    // TODO: There should be a check to see if the door can close (obstruction or open door button)
     if(doorState_ != DoorState::OBSTRUCTED)
         doorState_ = DoorState::CLOSED;
 }

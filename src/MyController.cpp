@@ -77,7 +77,6 @@ MyController::HandleServiceRequest( const ServiceRequest request,
                                     FloorSharedPtrVector floors)
 {
     pendingRequests_.emplace_back(request);
-    this->assignServiceRequests(elevators);
 }
 
 void

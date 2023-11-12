@@ -74,15 +74,16 @@ Floor::Update(ElevatorSharedPtrVector elevators)
 void 
 Floor::updateLights(ElevatorPanelSharedPtr ep, const int i)
 {
-    auto currentRequest = ep->GetCurrentlyServicing();
+   
 
     // Turn on indicator light if elevator was at floor.
     if(ep->GetPreviousFloor() == level_)
         panel_->SetElevatorLight(i, LightState::ON);
 
     // Turn off the service light if applicable
-    if(currentRequest.level == level_)
+    if(ep->IsAtFloor(level_))
     {            
+        auto currentRequest = ep->GetCurrentlyServicing();
         // turn off service call lights
         if(currentRequest.direction == RequestDirection::REQ_UP)
         {

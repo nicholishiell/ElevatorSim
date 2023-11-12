@@ -43,17 +43,13 @@ public:
     bool IsAtTargetFloor() const;
     int GetPreviousFloor() const;
     int GetNextFloor() const;
+    void Arrived();
 
-    ServiceRequest GetCurrentlyServicing() const {return currentlyServicing_;}
+    ServiceRequest GetCurrentlyServicing() const;
     
-    bool IsGoingUp() const {return currentlyServicing_.direction == RequestDirection::REQ_UP || 
-                                    currentlyServicing_.direction == RequestDirection::REQ_IDLE;}
-
-    bool IsGoingDown() const {return currentlyServicing_.direction == RequestDirection::REQ_DOWN || 
-                                    currentlyServicing_.direction == RequestDirection::REQ_IDLE;}
-
-
-    void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
+    bool IsGoingUp() const;
+    bool IsGoingDown() const;
+    void SetCurrentlyServicing(const ServiceRequest& r);
     void GoToFloor(const int i);
 
     bool IsAtFloor(const int floorIndex) const;
@@ -67,7 +63,6 @@ public:
     void AddToRoute(const ServiceRequest& request);
     bool IsRouteEmpty() const {return route_.empty();}
     void DisplayRoute() const;
-    void PopRoute();
 
     ElevatorPositionSensorSharedPtr GetSensor() const {return floorSensor_;}
 
@@ -104,7 +99,6 @@ private:
     AnimatedImage* speaker_;
 
     ServiceRequestVector route_;
-    ServiceRequest currentlyServicing_;
     
     std::string label_;
 

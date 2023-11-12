@@ -15,7 +15,6 @@ ElevatorStateIdle::Update(  ElevatorSharedPtr elevator,
     }
     else
     {
-        panel->SetCurrentlyServicing(ServiceRequest(panel->GetPreviousFloor(), RequestDirection::REQ_IDLE));
         return nullptr;
     }
 
@@ -35,21 +34,21 @@ ElevatorStateLeaving::Update(   ElevatorSharedPtr elevator,
 
     if(elevator->GetDoorState() == DoorState::CLOSED)
     {
-        // Get the next route off the route vector
-        panel->PopRoute();
-
-        // Determine which direction to head
-        if(panel->GetCurrentlyServicing().level > panel->GetPreviousFloor())
-            return  new ElevatorStateUp();
-        else if(panel->GetCurrentlyServicing().level < panel->GetPreviousFloor())
-            return new ElevatorStateDown();
-        else
-            return new ElevatorStateArrived();
+        if(!elevator->CheckOverloaded())
+        {
+            // Determine which direction to head
+            if(panel->GetCurrentlyServicing().level > panel->GetPreviousFloor())
+                return  new ElevatorStateUp();
+            else if(panel->GetCurrentlyServicing().level < panel->GetPreviousFloor())
+                return new ElevatorStateDown();
+            else
+                return new ElevatorStateArrived();
+        }
     }
     else
     {
         timeSpentWaiting_ += timeStep;
-        if(timeSpentWaiting_ > 5.)
+        if(timeSpentWaiting_ > 5. && elevator->GetDoorState() == DoorState::OPEN)
         {
             panel->AudioMessage();
             panel->DisplayMessage("!!! DOOR OBSTRUCTED !!!");
@@ -88,24 +87,17 @@ ElevatorStateDown::Update(  ElevatorSharedPtr elevator,
                             const float timeStep)
 {
     auto delta = -1.*timeStep*ELEVATOR_SPEED;
-    
-    auto panel = elevator->GetPanel();
+    elevator->UpdateHeight(delta);
 
-    if(elevator->GetHeight() + delta > 0.)
-    {
-        elevator->UpdateHeight(delta);
-    }
-    else
-    {
-        elevator->SetHeight(0.);
-    }
-
+    auto panel = elevator->GetPanel();  
     if(panel->IsAtTargetFloor())
     {
         return new ElevatorStateArrived();
     }
-
-    return nullptr;
+    else
+    {
+        return nullptr;
+    }
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,6 +108,8 @@ ElevatorStateArrived::Update(   ElevatorSharedPtr elevator,
 {
     elevator->GetPanel()->RingBell();
     
+    elevator->GetPanel()->Arrived();
+
     // Open the door
     elevator->OpenDoor();
     
