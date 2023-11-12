@@ -130,8 +130,7 @@ ElevatorPanel::IsGoingUp() const
 {
     auto currentlyServicing = this->GetCurrentlyServicing();
 
-    return  currentlyServicing.direction == RequestDirection::REQ_UP || 
-            currentlyServicing.direction == RequestDirection::REQ_IDLE;
+    return  currentlyServicing.direction == RequestDirection::REQ_UP;
 }
 
 bool 
@@ -139,10 +138,8 @@ ElevatorPanel::IsGoingDown() const
 {
     auto currentlyServicing = this->GetCurrentlyServicing();
 
-    return  currentlyServicing.direction == RequestDirection::REQ_DOWN || 
-            currentlyServicing.direction == RequestDirection::REQ_IDLE;
+    return  currentlyServicing.direction == RequestDirection::REQ_DOWN;
 }
-
 
 void 
 ElevatorPanel::SetCurrentlyServicing(const ServiceRequest& r) 
@@ -322,7 +319,8 @@ ElevatorPanel::Arrived()
 void 
 ElevatorPanel::Notify()
 {
-    this->DisplayMessage(std::to_string(GetPreviousFloor()));
+    if(!emergency_)
+        this->DisplayMessage(std::to_string(floorSensor_->GetNearestLevel()));
 }
 
 bool

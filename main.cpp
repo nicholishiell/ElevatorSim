@@ -11,14 +11,6 @@ int main(int argc, char *argv[])
 
   auto buildingSim = new BuildingSimulator(std::make_shared<MyController>());
 
-  buildingSim->AddFloor("F0");
-  buildingSim->AddFloor("F1");
-  buildingSim->AddFloor("F2");
-  buildingSim->AddFloor("F3");
-
-  buildingSim->AddElevator("EV1",DoorState::OPEN, 0.);
- // buildingSim->AddElevator("EV2",DoorState::CLOSED, 0.);
-
   GraphicsWindow aWindow(buildingSim);
 
   aWindow.show();

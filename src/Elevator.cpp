@@ -31,7 +31,8 @@ Elevator::Disable()
 void 
 Elevator::Enable()
 {
-     elevatorState_ =  new ElevatorStateIdle();
+    elevatorState_ =  new ElevatorStateIdle();
+    panel_->SetEmergency(false);
 }
 
 void 

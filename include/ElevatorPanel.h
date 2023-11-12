@@ -68,6 +68,8 @@ public:
 
     void Notify();
 
+    void SetEmergency(bool s){emergency_ = s;}
+
 public slots:
 
     void HelpButtonPresssed();
@@ -81,8 +83,6 @@ signals:
 
     void HelpRequested(ElevatorPanelSharedPtr panel);
     
-    // void ServiceRequested(const ServiceRequest& request);
-
 private:
     
     void addRequest(const ServiceRequest& request);
@@ -101,6 +101,7 @@ private:
     ServiceRequestVector route_;
     
     std::string label_;
+    bool emergency_ = false;
 
     ElevatorPositionSensorSharedPtr floorSensor_;
 };

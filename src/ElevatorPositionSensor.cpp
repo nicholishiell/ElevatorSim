@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "include/ElevatorPositionSensor.h"
 
 ElevatorPositionSensor::ElevatorPositionSensor()
@@ -73,18 +75,7 @@ ElevatorPositionSensor::GetNearestLevel()
 {
     auto height = elevator_->GetHeight();
 
-    auto nearestLevel = 0;
-    float currentMin = std::numeric_limits<float>::max();
-
-    for(int i = 0; i < numberOfFloors_; i++)
-    {
-        auto diff = height - i*FLOOR_HEIGHT_METERS;
-        if(height - i*FLOOR_HEIGHT_METERS < currentMin)
-        {
-            nearestLevel = i;
-            currentMin = diff;
-        }
-    } 
-
-    return nearestLevel;
+    auto nearestLevel = std::round(height / FLOOR_HEIGHT_METERS);
+    
+    return int(nearestLevel);
 }

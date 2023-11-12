@@ -43,8 +43,10 @@ Floor::Update(ElevatorSharedPtrVector elevators)
         for(uint iPerson = 0; iPerson < GetNumberOfPeople(); iPerson++)
         {
             auto person = peopleOnFloor_[iPerson];
+           
             if(elevator->IsAtFloor(level_))
             {
+                std::cout << person->GetName() <<" is getting on the elevator" << std::endl;
                 if( (elevatorPanel->IsGoingUp() && person->IsGoingUp()))
                 {
                     elevator->AddPerson(person);
@@ -61,10 +63,12 @@ Floor::Update(ElevatorSharedPtrVector elevators)
 
             if(person->IsGoingUp() && !panel_->IsUpRequested())
             {
+                std::cout << person->GetName() <<" is requesting an UP elevator" << std::endl;
                 panel_->UpButtonPresssed();
             }
             else if(person->IsGoingDown() && !panel_->IsDownRequested())
             {
+                std::cout << person->GetName() <<" is requesting a DOWN elevator" << std::endl;
                 panel_->DownButtonPresssed();
             }
         }
@@ -74,10 +78,8 @@ Floor::Update(ElevatorSharedPtrVector elevators)
 void 
 Floor::updateLights(ElevatorPanelSharedPtr ep, const int i)
 {
-   
-
     // Turn on indicator light if elevator was at floor.
-    if(ep->GetPreviousFloor() == level_)
+    if(ep->GetSensor()->GetNearestLevel() == level_)
         panel_->SetElevatorLight(i, LightState::ON);
 
     // Turn off the service light if applicable

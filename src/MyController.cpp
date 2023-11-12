@@ -92,6 +92,7 @@ void
 MyController::HandleAnswerHelp(ElevatorPanelSharedPtr elevatorPanel)
 {
     elevatorPanel->AudioMessage();
+    elevatorPanel->SetEmergency(true);
     elevatorPanel->DisplayMessage("Building Safety Service");
     helpRequested_ = false;
 }
@@ -114,7 +115,8 @@ MyController::Step( const float timeStep,
             elevatorPanel->AudioMessage();
             elevatorPanel->DisplayMessage("911 Operator");
             helpRequested_ = false;
-            buildingPanel->EndCall();  
+            buildingPanel->EndCall();
+            elevatorPanel->SetEmergency(true); 
         }
     }
 }
@@ -122,10 +124,10 @@ MyController::Step( const float timeStep,
 void 
 MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
 {   
-    // std::cout << "PendingJobs: " << std::endl;
-    // for(auto r : pendingRequests_)
-    //     std::cout << r.level << " ";
-    // std::cout << std::endl;
+    std::cout << "PendingJobs: " << std::endl;
+    for(auto r : pendingRequests_)
+        std::cout << "(" << r.level << ", " << r.direction << "), ";
+    std::cout << std::endl;
     
     // Loop over all the pending requests
     auto requestIter = pendingRequests_.begin();
@@ -139,22 +141,18 @@ MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
         // Loop over all the elevators to see which ones can service the request
         for(auto elevator : elevators)
         {
-            // Skip elevators that aren't in states UP/DOWN/IDLE
-            if( elevator->GetStateString() != "UP" &&  
-                elevator->GetStateString() != "DOWN" && 
-                elevator->GetStateString() != "IDLE")
-                continue;
-
+            auto panel = elevator->GetPanel();
+            
             // Skip elevators that are going in the wrong direction
-            if( (elevator->GetStateString() == "UP" && request.direction == RequestDirection::REQ_DOWN) ||
-                (elevator->GetStateString() == "DOWN" && request.direction == RequestDirection::REQ_UP) )
+            if( (panel->IsGoingUp() && request.direction == RequestDirection::REQ_DOWN) ||
+                (panel->IsGoingDown() && request.direction == RequestDirection::REQ_UP) )
                 continue;
 
-            // Skip elevators that are already passed the request level
             auto levelDiff = request.level - elevator->GetPanel()->GetPreviousFloor();
 
-            if( (elevator->GetStateString() == "UP" && levelDiff < 0) ||
-                (elevator->GetStateString() == "DOWN" && levelDiff > 0) )
+            // Skip elevators that are already passed the request level
+            if( (panel->IsGoingUp() && levelDiff < 0) ||
+                (panel->IsGoingDown() && levelDiff > 0) )
                 continue;
 
             if(std::abs(levelDiff) < minLevelDiff)
@@ -173,7 +171,79 @@ MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
             // Remove it from the pending list
             pendingRequests_.erase(requestIter);
             requestIter--;
+
+            std::cout << "job assigned to: " << assignedElevator->GetLabel() << std::endl;
+        }
+        else
+        {
+            std::cout << "job NOT assigned" << std::endl;
         }
     }
 
 }
+
+// void 
+// MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
+// {   
+//     std::cout << "PendingJobs: " << std::endl;
+//     for(auto r : pendingRequests_)
+//         std::cout << "(" << r.level << ", " << r.direction << "), ";
+//     std::cout << std::endl;
+    
+//     // Loop over all the pending requests
+//     auto requestIter = pendingRequests_.begin();
+//     for(; requestIter != pendingRequests_.end(); requestIter++)
+//     {
+//         auto request = *requestIter;
+
+//         auto minLevelDiff = 999;
+//         ElevatorSharedPtr assignedElevator = nullptr;
+        
+//         // Loop over all the elevators to see which ones can service the request
+//         for(auto elevator : elevators)
+//         {
+//             auto panel = elevator->GetPanel();
+//             // Skip elevators that aren't in states UP/DOWN/IDLE
+//             if( elevator->GetStateString() != "UP" &&  
+//                 elevator->GetStateString() != "DOWN" && 
+//                 elevator->GetStateString() != "IDLE")
+//                 continue;
+
+//             // Skip elevators that are going in the wrong direction
+//             if( (elevator->GetStateString() == "UP" && request.direction == RequestDirection::REQ_DOWN) ||
+//                 (elevator->GetStateString() == "DOWN" && request.direction == RequestDirection::REQ_UP) )
+//                 continue;
+
+//             auto levelDiff = request.level - elevator->GetPanel()->GetPreviousFloor();
+
+//             // Skip elevators that are already passed the request level
+//             if( (elevator->GetStateString() == "UP" && levelDiff < 0) ||
+//                 (elevator->GetStateString() == "DOWN" && levelDiff > 0) )
+//                 continue;
+
+//             if(std::abs(levelDiff) < minLevelDiff)
+//             {
+//                 assignedElevator = elevator;
+//                 minLevelDiff = std::abs(levelDiff);
+//             }
+//         }
+
+//         // If there is an elevator that is able to handle the request than assign it
+//         if(assignedElevator != nullptr)
+//         {
+//             // Assign it to the elevator
+//             assignedElevator->GetPanel()->AddToRoute(request);
+            
+//             // Remove it from the pending list
+//             pendingRequests_.erase(requestIter);
+//             requestIter--;
+
+//             std::cout << "job assigned to: " << assignedElevator->GetLabel() << std::endl;
+//         }
+//         else
+//         {
+//             std::cout << "job NOT assigned" << std::endl;
+//         }
+//     }
+
+// }

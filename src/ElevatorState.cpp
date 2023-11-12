@@ -9,6 +9,8 @@ ElevatorStateIdle::Update(  ElevatorSharedPtr elevator,
 {
     auto panel = elevator->GetPanel();
 
+    panel->Notify();
+
     if(!panel->IsRouteEmpty())
     {
         return new ElevatorStateLeaving();
@@ -28,31 +30,17 @@ ElevatorStateLeaving::Update(   ElevatorSharedPtr elevator,
 {
     auto panel = elevator->GetPanel();
 
-    elevator->GetPanel()->RingBell();
-    
-    elevator->CloseDoor();
-
-    if(elevator->GetDoorState() == DoorState::CLOSED)
+    panel->RingBell();
+       
+    if(!elevator->CheckOverloaded())
     {
-        if(!elevator->CheckOverloaded())
-        {
-            // Determine which direction to head
-            if(panel->GetCurrentlyServicing().level > panel->GetPreviousFloor())
-                return  new ElevatorStateUp();
-            else if(panel->GetCurrentlyServicing().level < panel->GetPreviousFloor())
-                return new ElevatorStateDown();
-            else
-                return new ElevatorStateArrived();
-        }
-    }
-    else
-    {
-        timeSpentWaiting_ += timeStep;
-        if(timeSpentWaiting_ > 5. && elevator->GetDoorState() == DoorState::OPEN)
-        {
-            panel->AudioMessage();
-            panel->DisplayMessage("!!! DOOR OBSTRUCTED !!!");
-        }
+        // Determine which direction to head
+        if(panel->GetCurrentlyServicing().level > panel->GetPreviousFloor())
+            return  new ElevatorStateUp();
+        else if(panel->GetCurrentlyServicing().level < panel->GetPreviousFloor())
+            return new ElevatorStateDown();
+        else
+            return new ElevatorStateArrived();
     }
 
     return nullptr;
@@ -117,7 +105,6 @@ ElevatorStateArrived::Update(   ElevatorSharedPtr elevator,
     return  new ElevatorStateWaiting();
 }
 
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ElevatorState*
@@ -135,11 +122,16 @@ ElevatorStateWaiting::Update(   ElevatorSharedPtr elevator,
         {
             return  new ElevatorStateIdle();
         }
+       
+        if(timeSpentWaiting_ > ELEVATOR_WAIT_TIME + 5.)
+        {
+            panel->DisplayMessage("!!! DOOR OBSTRUCTED !!!");
+            panel->AudioMessage();
+        }
     }
-    else
-    {
-        return nullptr;  
-    }
+   
+   
+    return nullptr;  
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,9 +142,10 @@ ElevatorStateDisabled::Update(  ElevatorSharedPtr elevator,
 {
     auto panel = elevator->GetPanel();
 
+    panel->SetEmergency(true);
     panel->AudioMessage();
     panel->RingBell();
-    panel->DisplayMessage("!!!EMERGENCY!!!");
+    panel->DisplayMessage("!!! EMERGENCY !!!");
 
     if(!panel->IsAtTargetFloor())
     {
@@ -171,7 +164,6 @@ ElevatorStateDisabled::Update(  ElevatorSharedPtr elevator,
     else
     {
         elevator->OpenDoor();
-        panel->SetCurrentlyServicing(ServiceRequest(panel->GetPreviousFloor(), RequestDirection::REQ_IDLE));
     } 
 
     return nullptr;

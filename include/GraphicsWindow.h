@@ -32,6 +32,9 @@ public slots:
     void PlaySimulation();
     void UpdateSimulationOneStep();
     void StopSimulation();
+    void AddFloorPressed();
+    void AddElevatorPressed();
+    void InitializedPressed();
 
 private:
 
@@ -45,6 +48,12 @@ private:
     QPushButton* playButton_;
     QPushButton* stopButton_;
     QPushButton* stepButton_;
+
+    QPushButton* addFloorButton_;
+    QPushButton* addElevatorButton_;
+    QPushButton* initializeButton_;
+
+    QPushButton* exitButton_;
 
     GraphicsGenerator* graphicsGenerator_;
     BuildingSimulator* buildingSimulator_;
