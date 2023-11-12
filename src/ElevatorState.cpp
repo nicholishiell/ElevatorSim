@@ -27,23 +27,34 @@ ElevatorState*
 ElevatorStateLeaving::Update(   ElevatorSharedPtr elevator, 
                                 const float timeStep)
 {
-    elevator->GetPanel()->RingBell();
-
-    // TODO: to make sure the door is closed and we are not overloaded, or there is a fire
-    elevator->CloseDoor();
-
     auto panel = elevator->GetPanel();
 
-    // Get the next route off the route vector
-    panel->PopRoute();
+    elevator->GetPanel()->RingBell();
+    
+    elevator->CloseDoor();
 
-    // Determine which direction to head
-    if(panel->GetCurrentlyServicing().level > panel->GetPreviousFloor())
-        return  new ElevatorStateUp();
-    else if(panel->GetCurrentlyServicing().level < panel->GetPreviousFloor())
-        return new ElevatorStateDown();
+    if(elevator->GetDoorState() == DoorState::CLOSED)
+    {
+        // Get the next route off the route vector
+        panel->PopRoute();
+
+        // Determine which direction to head
+        if(panel->GetCurrentlyServicing().level > panel->GetPreviousFloor())
+            return  new ElevatorStateUp();
+        else if(panel->GetCurrentlyServicing().level < panel->GetPreviousFloor())
+            return new ElevatorStateDown();
+        else
+            return new ElevatorStateArrived();
+    }
     else
-        return new ElevatorStateArrived();
+    {
+        timeSpentWaiting_ += timeStep;
+        if(timeSpentWaiting_ > 5.)
+        {
+            panel->AudioMessage();
+            panel->DisplayMessage("!!! DOOR OBSTRUCTED !!!");
+        }
+    }
 
     return nullptr;
 }
@@ -126,7 +137,10 @@ ElevatorStateWaiting::Update(   ElevatorSharedPtr elevator,
     if( (timeSpentWaiting_ > ELEVATOR_WAIT_TIME || panel->IsCloseDoorButtionActive()) && !panel->IsOpenDoorButtionActive())
     {
         elevator->CloseDoor();
-        return  new ElevatorStateIdle();
+        if(elevator->GetDoorState() == DoorState::CLOSED)
+        {
+            return  new ElevatorStateIdle();
+        }
     }
     else
     {

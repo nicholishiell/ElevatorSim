@@ -20,6 +20,8 @@
 #include "include/ElevatorPanel.h"
 #include "include/BuildingPanel.h"
 
+#include "include/PersonGenerator.h"
+
 class GraphicsGenerator;
 
 class BuildingSimulator : public QObject
@@ -67,7 +69,6 @@ private:
 
     void updateFloors(const float timeStep);
     void updateElevators(const float timeStep);
-    void updatePeople(const float timeStep);
 
     // Private Members
     ElevatorSharedPtrVector elevators_;
@@ -78,6 +79,8 @@ private:
     ControllerSharedPtr controller_;
 
     GraphicsGenerator* graphicsObserver_;
+
+    PersonGenerator* personGenerator_;
 };
 
 #endif

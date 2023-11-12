@@ -30,13 +30,14 @@ public:
     void SetElevatorLight(const int elevatorIndex, LightState newState);
     void LightsOut();
 
-private slots:
+    bool IsUpRequested() const {return upRequested_;}
+    bool IsDownRequested() const {return downRequested_;}
+
+public slots:
 
     void UpButtonPresssed();
     void DownButtonPresssed();
-
-public slots:
-    
+ 
     void DownRequestServiced(); 
     void UpRequestServiced();
 

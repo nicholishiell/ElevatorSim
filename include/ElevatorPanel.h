@@ -45,7 +45,13 @@ public:
     int GetNextFloor() const;
 
     ServiceRequest GetCurrentlyServicing() const {return currentlyServicing_;}
-    bool IsGoingDown() const {return currentlyServicing_.direction == RequestDirection::REQ_DOWN;}
+    
+    bool IsGoingUp() const {return currentlyServicing_.direction == RequestDirection::REQ_UP || 
+                                    currentlyServicing_.direction == RequestDirection::REQ_IDLE;}
+
+    bool IsGoingDown() const {return currentlyServicing_.direction == RequestDirection::REQ_DOWN || 
+                                    currentlyServicing_.direction == RequestDirection::REQ_IDLE;}
+
 
     void SetCurrentlyServicing(const ServiceRequest& r) {currentlyServicing_ = r;}
     void GoToFloor(const int i);
@@ -67,23 +73,25 @@ public:
 
     void Notify();
 
-private slots:
+public slots:
 
     void HelpButtonPresssed();
 
     void OpenButtonInteraction();
     void CloseButtonInteraction();
 
-    void FloorButtonPresssed();
+    void ServiceFloorButtonRequest(const int destinationFloor);
 
 signals:
 
     void HelpRequested(ElevatorPanelSharedPtr panel);
     
-    void ServiceRequested(const ServiceRequest& request);
+    // void ServiceRequested(const ServiceRequest& request);
 
 private:
     
+    void addRequest(const ServiceRequest& request);
+
     bool openDoor_;
     bool closeDoor_;
     

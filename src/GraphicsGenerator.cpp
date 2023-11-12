@@ -40,18 +40,27 @@ GraphicsGenerator::paint(   QPainter *painter,
         float y = 0;
     
         for(int iFloor = buildingSim_->GetNumberOfFloors()-1; iFloor >= 0; iFloor--)
-        {             
-            auto floorImage = drawFloor(buildingSim_->GetFloor(iFloor));
+        {    
+            auto floor = buildingSim_->GetFloor(iFloor);        
+            auto floorImage = drawFloor(floor);
 
             for(u_int iElevator = 0; iElevator  < buildingSim_->GetNumberOfElevators(); iElevator++)
             {
-                // TODO: Seg fault starts here
                 floorImage = drawElevatorOnFloor(   buildingSim_->GetElevator(iElevator),
                                                     floorImage,
                                                     iFloor,
                                                     iElevator);
             }
 
+
+            for(u_int iPerson = 0; iPerson < floor->GetNumberOfPeople(); iPerson++)
+            {
+                floorImage = drawPerson(floor->GetPerson(iPerson),
+                                        floorImage,
+                                        iFloor,
+                                        iPerson);
+            }
+               
             painter->drawPixmap(0,y,0.35*FLOOR_WIDTH,0.35*FLOOR_HEIGHT,floorImage);
 
             y = y + 0.35*FLOOR_HEIGHT+ 10;
@@ -75,6 +84,12 @@ GraphicsGenerator::paint(   QPainter *painter,
             auto elevatorY = totalHeightPixels * (1. - elevatorHeightMeters/totalHeightMeters) - elevator_height - 25;
 
             painter->drawRect(elevatorX, elevatorY, 60, 100);
+            
+            for(u_int iPerson = 0; iPerson < elevator->GetNumberOfPeople(); iPerson++)
+            {
+                auto personImage = QPixmap(QString::fromStdString("./images/Person/Person.png"));
+                painter->drawPixmap(elevatorX+iPerson*15, elevatorY+27, 40, 80, personImage);
+            }
         }
     }
 }
@@ -130,6 +145,31 @@ GraphicsGenerator::drawFloor(const FloorSharedPtr floor)
 }
 
 QPixmap 
+GraphicsGenerator::drawPerson(  PersonSharedPtr person,
+                                QPixmap floorImage, 
+                                const int floorIndex, 
+                                const int personIndex)
+{
+    auto personImage = QPixmap(QString::fromStdString("./images/Person/Person.png"));
+    
+    QPainter painter(&floorImage);        
+    painter.drawPixmap( 400+200*personIndex,
+                        100,
+                        PERSON_WIDTH,
+                        PERSON_HEIGHT, 
+                        personImage);
+    QFont font=painter.font() ;
+    font.setPointSize(18);
+    painter.setFont(font);
+
+    painter.drawText(   400 + 200*personIndex,
+                        400,
+                        QString::fromStdString(person->GetLabel()));
+
+    return floorImage;
+}
+
+QPixmap 
 GraphicsGenerator::drawElevatorOnFloor( const ElevatorSharedPtr elevator, 
                                         QPixmap floorImage, 
                                         const int floorIndex, 
@@ -137,7 +177,7 @@ GraphicsGenerator::drawElevatorOnFloor( const ElevatorSharedPtr elevator,
 {   
     QPixmap elevatorImage;
 
-    if(elevator->IsAtFloor(floorIndex) && elevator->GetDoorState() == DoorState::OPEN)
+    if(elevator->IsAtFloor(floorIndex) && elevator->GetDoorState() != DoorState::CLOSED)
     {
         elevatorImage = QPixmap("./images/elevator/ElevatorOpen.png");
     }
@@ -150,10 +190,10 @@ GraphicsGenerator::drawElevatorOnFloor( const ElevatorSharedPtr elevator,
     auto y = 87;
     QPainter painter(&floorImage);
     painter.drawPixmap( x,
-                    y,
-                    ELEVATOR_WIDTH,
-                    ELEVATOR_HEIGHT,
-                    elevatorImage);
+                        y,
+                        ELEVATOR_WIDTH,
+                        ELEVATOR_HEIGHT,
+                        elevatorImage);
 
     return floorImage;
 }

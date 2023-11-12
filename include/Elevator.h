@@ -37,7 +37,8 @@ public:
     void CloseDoor();
 
     // Updates the state and position of the elevator
-    void Update(const float timeStep);
+    void Update(const float timeStep, 
+                FloorSharedPtrVector floors);
 
     void ToConsole() const;
 
@@ -49,6 +50,14 @@ public:
     void RemoveObserver(Observer * obs){observers_.remove(obs);}
 
     bool IsAtFloor(const int floorIndex) const;
+    
+    void AddPerson(PersonSharedPtr p);
+    void RemovePerson(PersonSharedPtr p);
+    u_int GetNumberOfPeople() const {return peopleOnboard_.size();}
+
+public slots:
+    
+    void HandleDoorObstructed(const int floorIndex);
 
  private:
 
@@ -63,7 +72,7 @@ public:
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // People currently on the elvators
-    PersonVector passengers_;
+    PersonSharedPtrVector passengers_;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Panel that controls the elevator
@@ -77,6 +86,8 @@ public:
     DoorState doorState_;
   
     float height_;
+
+    PersonSharedPtrVector peopleOnboard_;
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // other private members

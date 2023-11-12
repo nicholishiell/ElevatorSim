@@ -41,6 +41,11 @@ private:
                                 QPixmap floorImage, 
                                 const int floorIndex, 
                                 const int elevatorIndex);
+
+    QPixmap drawPerson( PersonSharedPtr person,
+                        QPixmap floorImage, 
+                        const int floorIndex, 
+                        const int personIndex);
 };
 
 #endif

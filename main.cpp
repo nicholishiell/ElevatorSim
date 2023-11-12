@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
   buildingSim->AddFloor("F4");
 
   buildingSim->AddElevator("EV1",DoorState::OPEN, 0.);
-  buildingSim->AddElevator("EV2",DoorState::CLOSED, 0.);
+ // buildingSim->AddElevator("EV2",DoorState::CLOSED, 0.);
 
   GraphicsWindow aWindow(buildingSim);
 

@@ -1,4 +1,5 @@
 #include "include/Elevator.h"
+#include "include/Floor.h"
 
 #include <cmath>
 
@@ -34,7 +35,8 @@ Elevator::Enable()
 }
 
 void 
-Elevator::Update(const float timeStep)
+Elevator::Update(   const float timeStep, 
+                    FloorSharedPtrVector floors)
 {
     // Display data to console
     ToConsole();
@@ -46,6 +48,23 @@ Elevator::Update(const float timeStep)
     {
         delete(elevatorState_);
         elevatorState_ = nextState;
+    }
+
+    for(uint iPerson = 0; iPerson < this->GetNumberOfPeople(); iPerson++)
+    {
+        auto person = peopleOnboard_[iPerson];
+
+        if(this->IsAtFloor(person->GetDestinationFloor()))
+        {
+            person->Arrived();
+            floors[person->GetDestinationFloor()]->AddPerson(person);
+            peopleOnboard_.erase(peopleOnboard_.begin()+iPerson);
+            iPerson--;
+        }
+        else
+        {
+            this->panel_->ServiceFloorButtonRequest(person->GetDestinationFloor());
+        }
     }
 }
 
@@ -69,11 +88,12 @@ Elevator::ToConsole() const
     std::cout   << label_ <<"\t"  
                 << panel_->FloorPosString() << "\t"
                 << height_ << "\t" << elevatorState_->GetStateString() << std::endl;
-    std::cout << "CUR REQ: " <<  panel_->GetCurrentlyServicing().level << "\t" <<  panel_->GetCurrentlyServicing().direction << std::endl;
+    std::cout   << "CUR REQ: " 
+                << "lvl: " << panel_->GetCurrentlyServicing().level << "\t" 
+                << "dir: " << panel_->GetCurrentlyServicing().direction << std::endl;
     std::cout << "Route: " << std::endl;
     panel_->DisplayRoute();
 }
-
 
 void 
 Elevator::UpdateHeight(const float deltaH)
@@ -122,7 +142,7 @@ Elevator::checkOverloaded()
 {
     float currentWeight = 0.;
     for(auto person : passengers_)
-        currentWeight = currentWeight + person.GetWeight();
+        currentWeight = currentWeight + person->GetWeight();
 
     auto overloaded = currentWeight > ELEVATOR_MAX_WEIGHT;
 
@@ -132,11 +152,22 @@ Elevator::checkOverloaded()
     return overloaded;
 }
 
-bool 
-Elevator::checkDoorObstructed()
+void 
+Elevator::HandleDoorObstructed(const int floorIndex)
 {
-    panel_->SetOverloadState(doorObstructed_);
-    return doorObstructed_;
+    if(panel_->IsAtFloor(floorIndex))
+    {
+        if(doorState_ == DoorState::OBSTRUCTED)
+        {   
+            doorState_ = DoorState::OPEN;
+            panel_->SetDoorObstructedState(false);
+        }
+        else if(doorState_ == DoorState::OPEN)
+        {
+            doorState_ = DoorState::OBSTRUCTED;
+            panel_->SetDoorObstructedState(true);
+        }
+    }
 }
 
 void 
@@ -149,5 +180,21 @@ void
 Elevator::CloseDoor()
 {
     // TODO: There should be a check to see if the door can close (obstruction or open door button)
-    doorState_ = DoorState::CLOSED;
+    if(doorState_ != DoorState::OBSTRUCTED)
+        doorState_ = DoorState::CLOSED;
+}
+
+void 
+Elevator::AddPerson(PersonSharedPtr p)
+{
+    peopleOnboard_.emplace_back(p);
+}
+
+void 
+Elevator::RemovePerson(PersonSharedPtr p)
+{
+    auto b = peopleOnboard_.begin();
+    auto e = peopleOnboard_.end();
+
+    peopleOnboard_.erase(std::remove(b,e,p),e);
 }

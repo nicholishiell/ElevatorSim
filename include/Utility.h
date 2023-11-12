@@ -130,7 +130,8 @@ using BuildingPanelSharedPtr = std::shared_ptr<BuildingPanel>;
 
 using ControllerSharedPtr = std::shared_ptr<Controller>;
 
-using PersonVector = std::vector<Person>;
+using PersonSharedPtr = std::shared_ptr<Person>;
+using PersonSharedPtrVector = std::vector<PersonSharedPtr>;
 
 using GraphicsGeneratorSharedPtr = std::shared_ptr<GraphicsGenerator>;
 
@@ -154,7 +155,11 @@ const int ELEVATOR_HEIGHT = 265;
 
 const int ELEVATOR_SPACING = 300;
 
-const std::string FLOOR_SIGN_FILE_NAMES[6] = {  "Floor_01.png",
+const int PERSON_WIDTH = 200;
+const int PERSON_HEIGHT = 300;
+
+const std::string FLOOR_SIGN_FILE_NAMES[7] = {  "Floor_00.png",
+                                                "Floor_01.png",
                                                 "Floor_02.png",
                                                 "Floor_03.png",
                                                 "Floor_04.png",

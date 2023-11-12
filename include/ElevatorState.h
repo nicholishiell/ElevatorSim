@@ -103,7 +103,9 @@ public:
     
     ElevatorState* Update(  ElevatorSharedPtr elevator, 
                                     const float timeStep);
-    
+private:
+
+    float timeSpentWaiting_ = 0.;  
 };
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

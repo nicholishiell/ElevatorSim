@@ -9,16 +9,6 @@
 #include <QLabel>
 #include <QString>
 
-std::string
-int_to_string(const int i)
-{
-    std::stringstream ss;
-    std::string s;
-    ss << i;
-    ss >> s;
-    return s;
-}
-
 ElevatorPanel::ElevatorPanel(   const std::string label, 
                                 const int numFloors,
                                 ElevatorPositionSensorSharedPtr floorSensor,
@@ -95,7 +85,7 @@ ElevatorPanel::ElevatorPanel(   const std::string label,
             col = 1;
         gridLayout->addWidget(floorButton,row,col);
 
-        QObject::connect(floorButton, &QPushButton::clicked, this, &ElevatorPanel::FloorButtonPresssed);
+        QObject::connect(floorButton, &FloorButton::ServiceRequested, this, &ElevatorPanel::ServiceFloorButtonRequest);
     }
        
     this->setLayout(gridLayout);
@@ -145,14 +135,6 @@ ElevatorPanel::GoToFloor(const int i)
         currentlyServicing_ = ServiceRequest(i, RequestDirection::REQ_DOWN);
     }
 
-}
-
-void 
-ElevatorPanel::AddToRoute(const ServiceRequest& request)
-{
-    // Only add a level once to the route
-    if(std::find_if(route_.begin(), route_.end(), special_compare(request)) == route_.end())  
-        route_.emplace_back(request);
 }
 
 void 
@@ -265,31 +247,73 @@ ElevatorPanel::GetNextFloor() const
 }
 
 void 
-ElevatorPanel::FloorButtonPresssed()
+ElevatorPanel::ServiceFloorButtonRequest(const int destinationFloor)
 {
-    FloorButton* buttonSender = qobject_cast<FloorButton*>(sender()); // retrieve the button you have clicked
-   
-    auto requestedLevel = buttonSender->GetLevel();
+    std::cout << "ElevatorPanel::ServiceFloorButtonRequest" << std::endl;
 
-    auto currentDirection =  currentlyServicing_.direction;
-
-    if( requestedLevel > GetPreviousFloor() && 
-        (currentDirection == RequestDirection::REQ_UP || currentDirection == RequestDirection::REQ_IDLE))
-        route_.emplace_back(requestedLevel, RequestDirection::REQ_UP);
+    ServiceRequest request(destinationFloor, RequestDirection::REQ_IDLE);
     
-    if( requestedLevel < GetPreviousFloor() && 
-        (currentDirection == RequestDirection::REQ_UP || currentDirection == RequestDirection::REQ_IDLE))
-        route_.emplace_back(requestedLevel, RequestDirection::REQ_DOWN);   
+    if(destinationFloor > GetPreviousFloor())
+        request.direction = RequestDirection::REQ_UP;
+    else
+        request.direction = RequestDirection::REQ_DOWN;
+    
+    this->AddToRoute(request);
 }
 
- void 
- ElevatorPanel::Notify()
- {
+
+void 
+ElevatorPanel::AddToRoute(const ServiceRequest& request)
+{
+    // Only add a level once to the route
+    if(std::find_if(route_.begin(), route_.end(), special_compare(request)) == route_.end())  
+    {
+        if(request.direction == currentlyServicing_.direction || 
+            currentlyServicing_.direction == RequestDirection::REQ_IDLE)
+        {
+            this->addRequest(request);
+        }
+        else
+        {
+           std::cout << "ElevatorPanel::AddToRoute: request in wrong direction" << std::endl; 
+        }
+    }
+    else
+    {
+        std::cout << "ElevatorPanel::AddToRoute: request already in route" << std::endl;
+    }
+}
+
+void 
+ElevatorPanel::addRequest(const ServiceRequest& request)
+{
+    std::cout << "ElevatorPanel::addRequest: " << std::endl;
+
+    if(currentlyServicing_.direction != RequestDirection::REQ_IDLE)
+        route_.insert(route_.begin(), currentlyServicing_);
+
+    for(uint iRequest = 0; iRequest < route_.size(); iRequest++)
+    {
+        auto r = route_[iRequest];
+        if( (this->IsGoingUp() && r.level > request.level) ||
+            (this->IsGoingDown() && r.level < request.level) )
+        {
+            route_.insert(route_.begin()+iRequest, request);
+        }
+    }
+
+    if(route_.empty())
+        route_.emplace_back(request);
+}
+
+void 
+ElevatorPanel::Notify()
+{
     this->DisplayMessage(std::to_string(GetPreviousFloor()));
- }
+}
 
 bool
 ElevatorPanel::IsAtFloor(const int floorIndex) const
 {
-return floorSensor_->HasArrivedAtFloor(floorIndex);
+    return floorSensor_->HasArrivedAtFloor(floorIndex);
 }

@@ -76,16 +76,8 @@ MyController::HandleServiceRequest( const ServiceRequest request,
                                     ElevatorSharedPtrVector elevators,
                                     FloorSharedPtrVector floors)
 {
-    std::cout << "handleServiceRequest" << std::endl;
     pendingRequests_.emplace_back(request);
-
-    for(auto floor : floors)
-    {
-    }
-
-    for(auto elevator : elevators)
-    {
-    }
+    this->assignServiceRequests(elevators);
 }
 
 void
@@ -131,10 +123,10 @@ MyController::Step( const float timeStep,
 void 
 MyController::assignServiceRequests(ElevatorSharedPtrVector elevators)
 {   
-    std::cout << "PendingJobs: " << std::endl;
-    for(auto r : pendingRequests_)
-        std::cout << r.level << " ";
-    std::cout << std::endl;
+    // std::cout << "PendingJobs: " << std::endl;
+    // for(auto r : pendingRequests_)
+    //     std::cout << r.level << " ";
+    // std::cout << std::endl;
     
     // Loop over all the pending requests
     auto requestIter = pendingRequests_.begin();

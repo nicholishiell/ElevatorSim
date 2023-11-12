@@ -3,6 +3,8 @@
 
 #include <QPushButton>
 
+#include "include/Utility.h"
+
 class FloorButton : public QPushButton
 {
     Q_OBJECT
@@ -14,9 +16,17 @@ public:
                 QWidget * parent = 0) : QPushButton(text, parent)
     {
         level_ = level;
+
+        QObject::connect(this, &QPushButton::pressed, this, &FloorButton::FloorButtonPressed);
     }
 
-    int GetLevel() const {return level_;}
+private slots:
+
+    void FloorButtonPressed();
+
+signals:
+
+    void ServiceRequested(const int destinationFloor);
 
 private:
 

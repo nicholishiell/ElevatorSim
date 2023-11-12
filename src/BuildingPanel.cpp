@@ -28,6 +28,7 @@ BuildingPanel::BuildingPanel(   const int numFloors,
     QObject::connect(powerOutageButton, &QPushButton::clicked, this, &BuildingPanel::SoundPowerOutageAlarm);
     QObject::connect(enableButton, &QPushButton::clicked, this, &BuildingPanel::EnabledPressed);
     QObject::connect(answerButton, &QPushButton::clicked, this, &BuildingPanel::HandleAnswerPressed);
+    QObject::connect(obstructorButton, &QPushButton::clicked, this, &BuildingPanel::HandleObstructPressed);
 
     for(int i = 0; i < numFloors; i++)
         floorSelector_->addItem(QString::number(i));
@@ -43,6 +44,12 @@ BuildingPanel::BuildingPanel(   const int numFloors,
 BuildingPanel::~BuildingPanel()
 {
 
+}
+
+void 
+BuildingPanel::HandleObstructPressed()
+{
+    emit (ObstructDoor(floorSelector_->currentIndex()));
 }
 
 void 

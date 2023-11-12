@@ -33,6 +33,7 @@ private slots:
     void SoundPowerOutageAlarm();
     void EnabledPressed();
     void HandleAnswerPressed();
+    void HandleObstructPressed();
 
 public slots:
 
@@ -45,6 +46,8 @@ signals:
     void EnableElevators();
 
     void AnswerHelpRequest(ElevatorPanelSharedPtr panel);
+
+    void ObstructDoor(const int floorIndex);
 
 private:
 

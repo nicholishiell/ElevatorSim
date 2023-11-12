@@ -22,6 +22,7 @@ HEADERS +=  include/GraphicsWindow.h \
             include/ElevatorPositionSensor.h \
             include/FloorButton.h \
             include/Person.h \
+            include/PersonGenerator.h \
             include/AnimatedImage.h
 
 SOURCES +=  main.cpp \
@@ -29,6 +30,7 @@ SOURCES +=  main.cpp \
             src/BuildingPanel.cpp \
             src/BuildingSimulator.cpp \
             src/FloorPanel.cpp \
+            src/FloorButton.cpp \
             src/Controller.cpp \
             src/MyController.cpp \
             src/GraphicsGenerator.cpp \
@@ -38,6 +40,7 @@ SOURCES +=  main.cpp \
             src/ElevatorState.cpp \
             src/ElevatorPositionSensor.cpp \
             src/Person.cpp \
+            src/PersonGenerator.cpp \
             src/AnimatedImage.cpp
 
 QT += widgets

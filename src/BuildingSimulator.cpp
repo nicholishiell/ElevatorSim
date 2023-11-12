@@ -61,6 +61,8 @@ BuildingSimulator::Initialize()
     QObject::connect(buildingPanel_.get(),&BuildingPanel::EnableElevators,this,&BuildingSimulator::HandleEnableElevators);
     QObject::connect(buildingPanel_.get(),&BuildingPanel::AnswerHelpRequest,this,&BuildingSimulator::HandleAnswerHelp);
 
+    personGenerator_ = new PersonGenerator(floors_);
+
     for(auto& floor : floors_)
     {
         auto panel = std::make_shared<FloorPanel>(  floor->GetLabel(), 
@@ -80,8 +82,8 @@ BuildingSimulator::Initialize()
                                                         this->GetNumberOfFloors(),
                                                         sensor);
                                                         
-        QObject::connect(panel.get(), &ElevatorPanel::ServiceRequested, this, &BuildingSimulator::HandleServiceRequest);
-        QObject::connect(panel.get(), &ElevatorPanel::HelpRequested, this, &BuildingSimulator::HandleHelpRequest);
+        QObject::connect(panel.get(), &ElevatorPanel::HelpRequested, this, &BuildingSimulator::HandleHelpRequest);      
+        QObject::connect(buildingPanel_.get(),&BuildingPanel::ObstructDoor, elevator.get(),&Elevator::HandleDoorObstructed);
 
         elevator->SetPanel(panel);
         elevator->AddObserver(panel.get());
@@ -149,8 +151,6 @@ BuildingSimulator::Update(const float timeStep)
 
     this->updateFloors(timeStep);
 
-    this->updatePeople(timeStep);
-
     // Let the user defined controller do any periodic work it needs to do
     controller_->Step(timeStep, elevators_, buildingPanel_);
 
@@ -162,11 +162,10 @@ BuildingSimulator::Update(const float timeStep)
 void 
 BuildingSimulator::updateElevators(const float timeStep)
 {
-    // Move the elevators
+    // Move all the elevators
     for(auto elevator : elevators_)
     {
-        std::cout << "updating: " << elevator->GetLabel() << std::endl;
-        elevator->Update(timeStep);
+        elevator->Update(timeStep, floors_);
     }
 }
 
@@ -174,35 +173,7 @@ void
 BuildingSimulator::updateFloors(const float timeStep)
 {
     for(auto floor : floors_)
-        floor->GetPanel()->LightsOut();
-
-    for(unsigned int i = 0; i < elevators_.size(); i++)
     {
-        auto panel = elevators_[i]->GetPanel();
-        auto level = panel->GetPreviousFloor();
-        auto currentRequest = panel->GetCurrentlyServicing();
-
-        // Turn elevator light for the floor it is currently on
-        floors_[level]->GetPanel()->SetElevatorLight(i, LightState::ON);
-
-        if(currentRequest.level == level)
-        {            
-            // turn off service call lights
-            if(currentRequest.direction == RequestDirection::REQ_UP)
-            {
-                floors_[currentRequest.level]->GetPanel()->UpRequestServiced();
-            }
-            else if(currentRequest.direction == RequestDirection::REQ_DOWN)
-            {
-                floors_[currentRequest.level]->GetPanel()->DownRequestServiced();
-            }
-
-        }
+        floor->Update(elevators_);
     }
-}
-
-void 
-BuildingSimulator::updatePeople(const float timeStep)
-{
-
 }
